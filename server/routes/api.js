@@ -11,6 +11,15 @@ import {
     updateClientProfile,
     updateTherapistProfile,
 } from '../controllers/authController.js';
+import {
+    getAllTherapists,
+    getTherapistAvailability,
+    createBooking,
+    getUserBookings,
+    getTherapistBookings,
+    cancelBooking,
+    completeBooking,
+} from '../controllers/bookingController.js';
 import { verifyToken, verifyRole } from '../middleware/authMiddleware.js';
 
 const router = Router();
@@ -29,5 +38,14 @@ router.put('/auth/therapist/profile', verifyToken, verifyRole(['THERAPIST']), up
 
 // Pain mapping route
 router.post('/assessment/generate', generateAssessmentController);
+
+// Booking routes
+router.get('/therapists', getAllTherapists);
+router.get('/therapists/:therapistId/availability', getTherapistAvailability);
+router.post('/bookings', createBooking);
+router.get('/bookings/user/:userId', getUserBookings);
+router.get('/bookings/therapist/:therapistId', getTherapistBookings);
+router.put('/bookings/:bookingId/cancel', cancelBooking);
+router.put('/bookings/:bookingId/complete', completeBooking);
 
 export default router;
