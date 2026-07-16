@@ -8,21 +8,7 @@ export default function DashboardMedical({ data }: DashboardMedicalProps) {
       className="animate-fade-in"
       style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
     >
-      <div className="card hover-lift" style={{ position: "relative", overflow: "hidden" }}>
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: "-20px",
-            right: "-20px",
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            backgroundColor: "rgba(242,236,155,0.4)",
-            filter: "blur(15px)",
-            pointerEvents: "none"
-          }}
-        />
+      <div className="card" style={{ position: "relative" }}>
         <div
           style={{
             display: "flex",
@@ -44,7 +30,7 @@ export default function DashboardMedical({ data }: DashboardMedicalProps) {
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#444305" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#0D9488" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <div>
@@ -142,17 +128,12 @@ export default function DashboardMedical({ data }: DashboardMedicalProps) {
                 padding: "0.4rem 1rem",
                 backgroundColor: "var(--color-linen)",
                 borderRadius: "999px",
-                border: "1px solid rgba(68, 67, 5, 0.1)",
+                border: "1px solid #E5E7EB",
                 fontFamily: "var(--font-primary)",
                 fontSize: "0.85rem",
                 color: "var(--color-moss)",
                 fontWeight: 500,
-                boxShadow: "0 2px 4px rgba(68, 67, 5, 0.05)",
-                transition: "transform 0.2s ease",
-                cursor: "default"
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
               {area}
             </span>

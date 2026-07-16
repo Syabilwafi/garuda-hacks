@@ -198,7 +198,7 @@ export default function HumanModel({
           opacity={0.3}
           scale={4.0}
           blur={2.5}
-          color="#444305"
+          color="#1F2937"
           frames={1}
         />
         <OrbitControls
@@ -231,9 +231,10 @@ export default function HumanModel({
             display: "flex",
             alignItems: "center",
             gap: "6px",
+            textAlign: "center",
           }}
         >
-          <span>🖱️</span> Klik pada tubuh untuk menandai area nyeri - Drag untuk memutar
+          Klik pada tubuh untuk menandai area nyeri - Drag untuk memutar
         </div>
       )}
     </div>
