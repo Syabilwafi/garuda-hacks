@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT";
 
@@ -120,6 +121,7 @@ export default function TherapistDashboard() {
     };
 
     return (
+        <ProtectedRoute requiredRole="THERAPIST">
         <div style={{ minHeight: "calc(100vh - 64px)", backgroundColor: "var(--color-white)" }}>
             {/* Header Banner */}
             <div style={{ backgroundColor: "var(--color-white)", borderBottom: "1px solid #E5E7EB", padding: "2.5rem 1.5rem" }}>
@@ -398,5 +400,6 @@ export default function TherapistDashboard() {
                 </div>
             </div>
         </div>
+        </ProtectedRoute>
     );
 }

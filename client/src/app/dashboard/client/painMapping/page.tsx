@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import PainTypeSelector, { PainType } from "@/components/ui/PainTypeSelector";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import type { PainMarkData } from "@/components/3d/HumanModel";
@@ -195,6 +196,7 @@ export default function PainMappingPage() {
 
     //@ts-ignore
     return (
+        <ProtectedRoute requiredRole="CLIENT">
         <div
             style={{
                 minHeight: "calc(100vh - 64px)",
@@ -617,5 +619,6 @@ export default function PainMappingPage() {
                 </div>
             </div>
         </div>
+        </ProtectedRoute>
     );
 }

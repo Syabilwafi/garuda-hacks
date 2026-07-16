@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { bookingApi } from "@/api/bookingApi";
+import { useAuth } from "@/context/AuthContext";
 
 interface Appointment {
     id: string;
@@ -93,50 +96,166 @@ const PROFESSIONALS: Professional[] = [
 
 export default function ClientDashboard() {
     const router = useRouter();
+    const { user } = useAuth();
     const [appointments, setAppointments] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
+    const [professionals, setProfessionals] = useState<Professional[]>(PROFESSIONALS);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProf, setSelectedProf] = useState<Professional | null>(null);
-
     const [bookingDate, setBookingDate] = useState("");
     const [bookingTime, setBookingTime] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [isApiAvailable, setIsApiAvailable] = useState(true);
+    const [isFetchingTherapists, setIsFetchingTherapists] = useState(false);
 
-    const filteredProfessionals = PROFESSIONALS.filter((p) =>
+    // Fetch therapists when modal opens
+    useEffect(() => {
+        if (!isModalOpen) return;
+
+        const loadTherapists = async () => {
+            setIsFetchingTherapists(true);
+            try {
+                const therapists = await bookingApi.getAllTherapists();
+                if (therapists && therapists.length > 0) {
+                    const mapped: Professional[] = therapists.map(t => ({
+                        id: t.id,
+                        name: t.name,
+                        specialty: t.specialty,
+                        availability: t.availability,
+                        rating: t.rating,
+                        slots: [
+                            { time: "08:00 - 09:00 WIB", isAvailable: true },
+                            { time: "09:00 - 10:00 WIB", isAvailable: false },
+                            { time: "10:00 - 11:00 WIB", isAvailable: true },
+                            { time: "11:00 - 12:00 WIB", isAvailable: true },
+                            { time: "14:00 - 15:00 WIB", isAvailable: false },
+                            { time: "15:00 - 16:00 WIB", isAvailable: true },
+                        ],
+                    }));
+                    setProfessionals(mapped);
+                    setIsApiAvailable(true);
+                } else {
+                    // If no therapists returned, use fallback
+                    setProfessionals(PROFESSIONALS);
+                }
+            } catch (error) {
+                console.warn('Failed to load therapists from API, using fallback data');
+                setProfessionals(PROFESSIONALS);
+                setIsApiAvailable(false);
+            } finally {
+                setIsFetchingTherapists(false);
+            }
+        };
+
+        loadTherapists();
+    }, [isModalOpen]);
+
+    useEffect(() => {
+        const loadAppointments = async () => {
+            if (!user?.id) return;
+
+            try {
+                const bookings = await bookingApi.getUserBookings(user.id);
+                if (bookings && bookings.length > 0) {
+                    const mapped = bookings.map(b => ({
+                        id: b.id,
+                        professionalName: b.therapistName,
+                        role: b.therapistSpecialization,
+                        date: b.date,
+                        time: `${b.startTime} - ${b.endTime}`,
+                        status: b.status as "Upcoming" | "Completed" | "Cancelled",
+                    }));
+                    setAppointments([...mapped, ...INITIAL_APPOINTMENTS]);
+                    setIsApiAvailable(true);
+                }
+            } catch (error) {
+                console.warn('API unavailable, using fallback data');
+                setIsApiAvailable(false);
+            }
+        };
+
+        loadAppointments();
+    }, [user?.id]);
+
+    const filteredProfessionals = professionals.filter((p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.specialty.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleCreateAppointment = (e: React.FormEvent) => {
+    const handleCreateAppointment = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedProf || !bookingDate || !bookingTime) return;
 
-        const formattedDate = new Date(bookingDate).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
+        setIsLoading(true);
 
-        const newApt: Appointment = {
-            id: `APT-00${appointments.length + 1}`,
-            professionalName: selectedProf.name,
-            role: selectedProf.specialty,
-            date: formattedDate,
-            time: bookingTime,
-            status: "Upcoming",
-        };
+        try {
+            if (isApiAvailable && user?.id) {
+                const timeParts = bookingTime.split(' - ');
+                const result = await bookingApi.createBooking({
+                    userId: user.id,
+                    therapistId: selectedProf.id,
+                    date: bookingDate,
+                    startTime: timeParts[0],
+                    endTime: timeParts[1],
+                });
 
-        setAppointments([newApt, ...appointments]);
+                if (result) {
+                    const formattedDate = new Date(bookingDate).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    });
 
-        setIsModalOpen(false);
-        setSelectedProf(null);
-        setBookingDate("");
-        setBookingTime("");
-        setSearchTerm("");
+                    const newApt: Appointment = {
+                        id: result.id,
+                        professionalName: selectedProf.name,
+                        role: selectedProf.specialty,
+                        date: formattedDate,
+                        time: bookingTime,
+                        status: "Upcoming",
+                    };
 
-        router.push("/dashboard/client/painMapping");
+                    setAppointments([newApt, ...appointments]);
+                } else {
+                    throw new Error('Booking failed');
+                }
+            } else {
+                // Fallback: use mock booking
+                const formattedDate = new Date(bookingDate).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                });
+
+                const newApt: Appointment = {
+                    id: `APT-00${appointments.length + 1}`,
+                    professionalName: selectedProf.name,
+                    role: selectedProf.specialty,
+                    date: formattedDate,
+                    time: bookingTime,
+                    status: "Upcoming",
+                };
+
+                setAppointments([newApt, ...appointments]);
+            }
+
+            setIsModalOpen(false);
+            setSelectedProf(null);
+            setBookingDate("");
+            setBookingTime("");
+            setSearchTerm("");
+
+            router.push("/dashboard/client/painMapping");
+        } catch (error) {
+            console.error('Error creating appointment:', error);
+            alert('Gagal membuat janji temu. Silakan coba lagi.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
+        <ProtectedRoute requiredRole="CLIENT">
         <div style={{ minHeight: "calc(100vh - 64px)", backgroundColor: "var(--color-white)" }}>
             {/* Header Banner */}
             <div style={{ backgroundColor: "var(--color-white)", borderBottom: "1px solid #E5E7EB", padding: "2.5rem 1.5rem" }}>
@@ -159,7 +278,6 @@ export default function ClientDashboard() {
             <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1.5rem 4rem" }}>
                 <div className="responsive-dashboard-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem", alignItems: "start" }}>
 
-                    {/* Inject dynamic layout matching your project standard */}
                     <style dangerouslySetInnerHTML={{__html: `
                         @media (min-width: 1024px) {
                             .responsive-dashboard-grid {
@@ -212,9 +330,9 @@ export default function ClientDashboard() {
                                                     <h3 style={{ fontSize: "1rem", margin: 0 }}>{apt.professionalName}</h3>
                                                     <span style={{ fontSize: "0.75rem", color: "var(--color-moss-60)" }}>• {apt.role}</span>
                                                 </div>
-                                                <p style={{ fontSize: "0.85rem", color: "var(--color-moss-80)", display: "flex", gap: "1rem", margin: 0 }}>
-                                                    <span>📅 {apt.date}</span>
-                                                    <span>⏰ {apt.time}</span>
+                                                <p style={{ fontSize: "0.85rem", color: "var(--color-moss-80)", display: "flex", gap: "2rem", margin: 0 }}>
+                                                    <span><span style={{fontWeight: 700}}>Date: </span>{apt.date}</span>
+                                                    <span><span style={{fontWeight: 700}}>Time: </span>{apt.time}</span>
                                                 </p>
                                             </div>
                                             <div>
@@ -245,33 +363,61 @@ export default function ClientDashboard() {
                     <div className="card" style={{ width: "100%", maxWidth: "520px", maxHeight: "85vh", overflowY: "auto", position: "relative" }}>
 
                         {/* Close Modal Button */}
-                        <button onClick={() => { setIsModalOpen(false); setSelectedProf(null); }} style={{ position: "absolute", top: "1rem", right: "1rem", background: "transparent", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--color-moss-60)" }}>&times;</button>
+                        <button onClick={() => { setIsModalOpen(false); setSelectedProf(null); setSearchTerm(""); }} style={{ position: "absolute", top: "1rem", right: "1rem", background: "transparent", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--color-moss-60)" }}>&times;</button>
 
                         <h2 style={{ fontSize: "1.35rem", marginBottom: "1rem" }}>Cari & Pilih Profesional</h2>
 
                         {!selectedProf ? (
                             <>
-                                <div style={{ marginBottom: "1.25rem" }}>
-                                    <input type="text" className="input" placeholder="Cari berdasarkan nama ahli atau spesialisasi..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-                                </div>
-
-                                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                                    {filteredProfessionals.map((prof) => (
-                                        <div key={prof.id} onClick={() => setSelectedProf(prof)} style={{ cursor: "pointer", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "all 0.15s ease" }} onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--color-martini)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "#E5E7EB"}>
-                                            <div>
-                                                <h4 style={{ margin: "0 0 0.25rem 0", fontSize: "0.95rem" }}>{prof.name}</h4>
-                                                <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-moss-60)" }}>{prof.specialty}</p>
-                                                <p style={{ margin: "0.25rem 0 0 0", fontSize: "0.75rem", color: "var(--color-martini)" }}>📅 {prof.availability}</p>
-                                            </div>
-                                            <div style={{ textAlign: "right" }}>
-                                                <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "#EAB308" }}>★ {prof.rating}</span>
-                                            </div>
+                                {isFetchingTherapists ? (
+                                    <div style={{
+                                        padding: "2rem",
+                                        textAlign: "center",
+                                        color: "var(--color-moss-60)"
+                                    }}>
+                                        <div style={{
+                                            display: "inline-block",
+                                            width: "40px",
+                                            height: "40px",
+                                            border: "4px solid #E5E7EB",
+                                            borderTop: "4px solid var(--color-martini)",
+                                            borderRadius: "50%",
+                                            animation: "spin 1s linear infinite",
+                                            marginBottom: "1rem"
+                                        }} />
+                                        <p style={{ fontSize: "0.9rem", margin: "0.5rem 0 0 0" }}>Memuat daftar terapis...</p>
+                                        <style>{`
+                                            @keyframes spin {
+                                                0% { transform: rotate(0deg); }
+                                                100% { transform: rotate(360deg); }
+                                            }
+                                        `}</style>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div style={{ marginBottom: "1.25rem" }}>
+                                            <input type="text" className="input" placeholder="Cari berdasarkan nama ahli atau spesialisasi..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} disabled={isFetchingTherapists} />
                                         </div>
-                                    ))}
-                                    {filteredProfessionals.length === 0 && (
-                                        <p style={{ fontSize: "0.85rem", color: "var(--color-moss-60)", textAlign: "center" }}>Profesional tidak ditemukan.</p>
-                                    )}
-                                </div>
+
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                                            {filteredProfessionals.map((prof) => (
+                                                <div key={prof.id} onClick={() => setSelectedProf(prof)} style={{ cursor: "pointer", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "all 0.15s ease" }} onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--color-martini)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "#E5E7EB"}>
+                                                    <div>
+                                                        <h4 style={{ margin: "0 0 0.25rem 0", fontSize: "0.95rem" }}>{prof.name}</h4>
+                                                        <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-moss-60)" }}>{prof.specialty}</p>
+                                                        <p style={{ margin: "0.25rem 0 0 0", fontSize: "0.75rem", color: "var(--color-martini)" }}>📅 {prof.availability}</p>
+                                                    </div>
+                                                    <div style={{ textAlign: "right" }}>
+                                                        <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "#EAB308" }}>★ {prof.rating}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {filteredProfessionals.length === 0 && !isFetchingTherapists && (
+                                                <p style={{ fontSize: "0.85rem", color: "var(--color-moss-60)", textAlign: "center" }}>Profesional tidak ditemukan.</p>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
                             </>
                         ) : (
                             /* Final Configuration Form Step */
@@ -317,7 +463,7 @@ export default function ClientDashboard() {
                                             color: "var(--color-moss-60)",
                                             fontSize: "0.85rem"
                                         }}>
-                                            ⚠️ Silakan pilih tanggal terlebih dahulu untuk melihat jadwal yang tersedia.
+                                            Silakan pilih tanggal terlebih dahulu untuk melihat jadwal yang tersedia.
                                         </div>
                                     ) : (
                                         <div style={{
@@ -378,9 +524,38 @@ export default function ClientDashboard() {
                                     <input type="hidden" required value={bookingTime} name="bookingTime" />
                                 </div>
 
+                                {!isApiAvailable && (
+                                    <div style={{
+                                        padding: "0.65rem",
+                                        borderRadius: "var(--radius-sm)",
+                                        backgroundColor: "#FFF5F5",
+                                        borderLeft: "3px solid #DC2626",
+                                        fontSize: "0.75rem",
+                                        color: "#991B1B",
+                                        lineHeight: 1.4
+                                    }}>
+                                        ⚠️ Mode Demo: Koneksi backend tidak tersedia, menggunakan data simulasi.
+                                    </div>
+                                )}
+
                                 <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
-                                    <button type="button" className="btn-secondary" style={{ flex: 1 }} onClick={() => { setSelectedProf(null); setBookingTime(""); }}>Kembali</button>
-                                    <button type="submit" className="btn-primary" style={{ flex: 2 }} disabled={!bookingDate || !bookingTime}>Konfirmasi Jadwal</button>
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        style={{ flex: 1 }}
+                                        onClick={() => { setSelectedProf(null); setBookingTime(""); }}
+                                        disabled={isLoading}
+                                    >
+                                        Kembali
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="btn-primary"
+                                        style={{ flex: 2 }}
+                                        disabled={!bookingDate || !bookingTime || isLoading}
+                                    >
+                                        {isLoading ? 'Memproses...' : 'Konfirmasi Jadwal'}
+                                    </button>
                                 </div>
                             </form>
                         )}
@@ -388,5 +563,6 @@ export default function ClientDashboard() {
                 </div>
             )}
         </div>
+        </ProtectedRoute>
     );
 }
