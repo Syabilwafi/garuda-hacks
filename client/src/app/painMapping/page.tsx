@@ -44,7 +44,7 @@ export default function PainMappingPage() {
     const [activeHighlights, setActiveHighlights] = useState(false);
 
     const handlePaintPoint = useCallback((point: PainMarkData) => {
-        const p = { ...point, intensity: selectedIntensity };
+        const p = { ...point, intensity: Math.round(selectedIntensity) };
         setPaintedPoints((prev) => [...prev, p]);
     }, [selectedIntensity]);
 
@@ -182,9 +182,13 @@ export default function PainMappingPage() {
                                     type="range"
                                     min="1"
                                     max="5"
-                                    step="1"
+                                    step="0.01"
                                     value={selectedIntensity}
-                                    onChange={(e) => setSelectedIntensity(Number(e.target.value))}
+                                    onChange={(e) => {
+                                        const val = Number(e.target.value);
+                                        setSelectedIntensity(val);
+
+                                    }}
                                     style={{
                                         flex: 1,
                                         accentColor: "var(--color-martini)",
@@ -194,7 +198,7 @@ export default function PainMappingPage() {
                                 <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--color-moss-60)" }}>Berat</span>
                             </div>
                             <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.9rem", fontWeight: 700, color: "var(--color-moss)" }}>
-                                Level: {selectedIntensity}
+                                Level: {Math.round(selectedIntensity)}
                             </div>
                         </div>
 

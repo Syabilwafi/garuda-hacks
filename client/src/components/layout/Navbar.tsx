@@ -66,12 +66,7 @@ export default function Navbar() {
       </Link>
       <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
         <NavLink
-            href="/painMapping" label="Pemetaan Nyeri" active={pathname === "/painMapping"} />
-        <NavLink
-          href="/training"
-          label="Evaluasi Training"
-          active={pathname === "/training"}
-        />
+            href="/clientDashboard" label="Dashboard" active={pathname === "/clientDashboard"} />
       </div>
     </nav>
   );
