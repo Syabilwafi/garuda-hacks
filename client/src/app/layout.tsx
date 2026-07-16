@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Disclaimer from "@/components/layout/Disclaimer";
+import { AuthProvider } from "@/context/AuthContext";
+
 export const metadata: Metadata = {
   title: "PressPoint — Pemetaan Nyeri 3D Interaktif",
   description:
@@ -23,6 +25,7 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,11 +34,13 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body>
-        <Navbar />
-        <main style={{ minHeight: "calc(100vh - 64px - 120px)" }}>
-          {children}
-        </main>
-        <Disclaimer />
+        <AuthProvider>
+          <Navbar />
+          <main style={{ minHeight: "calc(100vh - 64px - 120px)" }}>
+            {children}
+          </main>
+          <Disclaimer />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface Appointment {
     id: string;
@@ -137,6 +138,7 @@ export default function ClientDashboard() {
     };
 
     return (
+        <ProtectedRoute requiredRole="CLIENT">
         <div style={{ minHeight: "calc(100vh - 64px)", backgroundColor: "var(--color-white)" }}>
             {/* Header Banner */}
             <div style={{ backgroundColor: "var(--color-white)", borderBottom: "1px solid #E5E7EB", padding: "2.5rem 1.5rem" }}>
@@ -388,5 +390,6 @@ export default function ClientDashboard() {
                 </div>
             )}
         </div>
+        </ProtectedRoute>
     );
 }
