@@ -1,15 +1,9 @@
 "use client";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import PainTypeSelector, { PainType } from "@/components/ui/PainTypeSelector";
-import DashboardMedical from "@/components/dashboard/DashboardMedical";
-import DashboardTraditional from "@/components/dashboard/DashboardTraditional";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import {
-    generateAssessment,
-    AssessmentResponse,
-    HighlightedNode,
-} from "@/api/assessmentApi";
 import type { PainMarkData } from "@/components/3d/HumanModel";
 
 const HumanModel = dynamic(() => import("@/components/3d/HumanModel"), {
@@ -31,62 +25,174 @@ const HumanModel = dynamic(() => import("@/components/3d/HumanModel"), {
     ),
 });
 
-type ActiveTab = "medis" | "tradisional";
+const TAHAP_1_EMERGENCY = [
+    { id: "t1_1", label: "Apakah Anda mengalami nyeri dada atau sesak napas?" },
+    { id: "t1_2", label: "Apakah Anda tiba-tiba kehilangan kekuatan pada tangan atau kaki?" },
+    { id: "t1_3", label: "Apakah Anda kehilangan kontrol buang air kecil atau besar?" },
+    { id: "t1_4", label: "Apakah Anda mengalami mati rasa di sekitar genital, bokong, atau paha dalam?" },
+    { id: "t1_5", label: "Apakah nyeri muncul setelah kecelakaan atau benturan berat?" },
+    { id: "t1_6", label: "Apakah salah satu kaki tiba-tiba bengkak, merah, hangat, dan nyeri?" },
+];
+
+const TAHAP_2_URGENT = [
+    { id: "t2_1", label: "Apakah Anda demam atau menggigil?" },
+    { id: "t2_2", label: "Apakah area nyeri merah, panas, atau membengkak?" },
+    { id: "t2_3", label: "Apakah terdapat luka terbuka atau infeksi?" },
+    { id: "t2_4", label: "Apakah berat badan turun tanpa direncanakan?" },
+    { id: "t2_5", label: "Apakah Anda memiliki riwayat kanker dan sekarang mengalami nyeri baru?" },
+    { id: "t2_6", label: "Apakah nyeri terus memburuk atau membangunkan Anda setiap malam?" },
+    { id: "t2_7", label: "Apakah Anda tidak dapat berjalan atau menggunakan bagian tubuh tersebut?" },
+];
+
+const TAHAP_3_YELLOW = [
+    { id: "t3_1", label: "Apakah Anda sedang hamil?" },
+    { id: "t3_2", label: "Apakah Anda memiliki osteoporosis?" },
+    { id: "t3_3", label: "Apakah Anda menggunakan pengencer darah?" },
+    { id: "t3_4", label: "Apakah Anda baru menjalani operasi?" },
+    { id: "t3_5", label: "Apakah Anda mengalami kesemutan atau mati rasa ringan?" },
+    { id: "t3_6", label: "Apakah Anda memiliki diabetes atau gangguan sensasi?" },
+    { id: "t3_7", label: "Apakah Anda memiliki implan pada area keluhan?" },
+];
+
+type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT" | null;
 
 export default function PainMappingPage() {
+    const router = useRouter();
+
     const [selectedPainType, setSelectedPainType] = useState<PainType | null>("THROBBING");
     const [selectedIntensity, setSelectedIntensity] = useState<number>(3);
     const [paintedPoints, setPaintedPoints] = useState<PainMarkData[]>([]);
-    const [highlightedNodes, setHighlightedNodes] = useState<HighlightedNode[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [assessment, setAssessment] = useState<AssessmentResponse | null>(null);
-    const [activeTab, setActiveTab] = useState<ActiveTab>("medis");
-    const [activeHighlights, setActiveHighlights] = useState(false);
+
+    const [healthDescription, setHealthDescription] = useState("");
+    const [triageAnswers, setTriageAnswers] = useState<Record<string, "ya" | "tidak">>({});
+
+    const [currentStep, setCurrentStep] = useState<number>(0);
+    const [hardStopStatus, setHardStopStatus] = useState<TriageStatus>(null);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
     const handlePaintPoint = useCallback((point: PainMarkData) => {
-        const p = { ...point, intensity: selectedIntensity };
+        const p = { ...point, intensity: Math.round(selectedIntensity) };
         setPaintedPoints((prev) => [...prev, p]);
     }, [selectedIntensity]);
 
     const handleClearMarks = () => {
         setPaintedPoints([]);
-        setHighlightedNodes([]);
-        setAssessment(null);
-        setActiveHighlights(false);
     };
 
-    const handleGenerateAssessment = async () => {
-        if (paintedPoints.length === 0) return;
-        setLoading(true);
-        setAssessment(null);
-        setActiveHighlights(false);
-        setHighlightedNodes([]);
-        try {
-            const result = await generateAssessment(
-                "pasien-demo-001",
-                paintedPoints.map((p) => ({
-                    coordinate3D: p.coordinate3D,
-                    painType: p.painType,
-                }))
-            );
-            setAssessment(result);
-            setActiveTab("medis");
-        } finally {
-            setLoading(false);
+    const handleAnswer = (questionId: string, answer: "ya" | "tidak", stageType: 1 | 2 | 3) => {
+        const updatedAnswers = { ...triageAnswers, [questionId]: answer };
+        setTriageAnswers(updatedAnswers);
+
+        if (answer === "ya") {
+            if (stageType === 1) {
+                setHardStopStatus("MERAH_DARURAT");
+            } else if (stageType === 2 && hardStopStatus !== "MERAH_DARURAT") {
+                setHardStopStatus("MERAH_MENDESAK");
+            }
+        }
+
+        setCurrentStep((prev) => prev + 1);
+    };
+
+    const handleNextStep = () => {
+        if (currentStep === 0 && !healthDescription.trim()) {
+            alert("Silakan isi deskripsi keluhan kesehatan Anda terlebih dahulu.");
+            return;
+        }
+        setCurrentStep((prev) => prev + 1);
+    };
+
+    const handleBackStep = () => {
+        if (currentStep > 0) {
+            setCurrentStep((prev) => prev - 1);
         }
     };
 
-    const handleHighlightNodes = (nodes: HighlightedNode[]) => {
-        setHighlightedNodes(nodes);
-        setActiveHighlights(nodes.length > 0);
+    const getFinalTriageStatus = (): TriageStatus => {
+        if (hardStopStatus === "MERAH_DARURAT" || hardStopStatus === "MERAH_MENDESAK") {
+            return hardStopStatus;
+        }
+
+        const hasStage3Yes = TAHAP_3_YELLOW.some((q) => triageAnswers[q.id] === "ya");
+        const isPainSevere = selectedIntensity >= 7;
+
+        if (hasStage3Yes || isPainSevere) {
+            return "KUNING";
+        }
+
+        return "HIJAU";
     };
+
+    const handleSubmitForm = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        const finalStatus = getFinalTriageStatus();
+
+        const formData = {
+            paintedPoints: paintedPoints.map((p) => ({
+                coordinate3D: p.coordinate3D,
+                painType: p.painType,
+                intensity: p.intensity,
+            })),
+            healthDescription,
+            selectedIntensity,
+            statusTriase: finalStatus,
+            answers: triageAnswers
+        };
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            console.log("Submitted Form Data: ", formData);
+            setSubmitSuccess(true);
+
+            setHealthDescription("");
+            setTriageAnswers({});
+            setPaintedPoints([]);
+
+            router.push("/clientDashboard");
+        } catch (error) {
+            console.error("Submission failed", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const totalTriageQuestions = TAHAP_1_EMERGENCY.length + TAHAP_2_URGENT.length + TAHAP_3_YELLOW.length;
+    const totalSteps = 1 + totalTriageQuestions;
+    const progressPercentage = Math.round((currentStep / totalSteps) * 100);
 
     const painTypeCount = paintedPoints.reduce<Record<string, number>>((acc, p) => {
         acc[p.painType] = (acc[p.painType] ?? 0) + 1;
         return acc;
     }, {});
 
-    // @ts-ignore
+    const finalStatus = getFinalTriageStatus();
+
+    const buttonYaStyle = {
+        flex: 1,
+        padding: "0.85rem",
+        backgroundColor: "var(--color-martini)",
+        color: "white",
+        border: "none",
+        borderRadius: "999px",
+        fontWeight: 700,
+        cursor: "pointer"
+    };
+
+    const buttonTidakStyle = {
+        flex: 1,
+        padding: "0.85rem",
+        backgroundColor: "#F3F4F6",
+        color: "var(--color-moss)",
+        border: "1px solid #E5E7EB",
+        borderRadius: "999px",
+        fontWeight: 700,
+        cursor: "pointer"
+    };
+
     return (
         <div
             style={{
@@ -109,7 +215,7 @@ export default function PainMappingPage() {
                             fontSize: "clamp(1.5rem, 4vw, 1.875rem)"
                         }}
                     >
-                        Pemetaan Nyeri 3D
+                        Pemetaan Nyeri 3D & Skrining Keselamatan
                     </h1>
                     <p
                         style={{
@@ -118,12 +224,12 @@ export default function PainMappingPage() {
                             maxWidth: "520px",
                         }}
                     >
-                        Klik atau sentuh area tubuh pada model 3D untuk menandai lokasi nyeri Anda. Putar model untuk melihat dari berbagai sudut.
+                        Klik atau sentuh area tubuh pada model 3D untuk menandai lokasi nyeri Anda, kemudian selesaikan skrining mandiri di panel kanan.
                     </p>
                 </div>
             </div>
 
-            {/* Main Responsive Layout Wrapper */}
+            {/* Main Layout */}
             <div
                 style={{
                     maxWidth: "1200px",
@@ -134,25 +240,24 @@ export default function PainMappingPage() {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", /* Fallback strategy for clean flex/grid */
+                        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
                         gap: "2rem",
                         alignItems: "start",
                     }}
                     className="responsive-main-grid"
                 >
-                    {/* Custom style injection for structural media queries */}
                     <style dangerouslySetInnerHTML={{__html: `
-            @media (min-width: 1024px) {
-              .responsive-main-grid {
-                grid-template-columns: 300px 1fr 340px !important;
-              }
-            }
-            @media (max-width: 640px) {
-              .model-container {
-                height: 400px !important;
-              }
-            }
-          `}} />
+                        @media (min-width: 1024px) {
+                          .responsive-main-grid {
+                            grid-template-columns: 300px 1fr 360px !important;
+                          }
+                        }
+                        @media (max-width: 640px) {
+                          .model-container {
+                            height: 400px !important;
+                          }
+                        }
+                    `}} />
 
                     {/* Left Panel: Selectors */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
@@ -181,10 +286,13 @@ export default function PainMappingPage() {
                                 <input
                                     type="range"
                                     min="1"
-                                    max="5"
+                                    max="10"
                                     step="1"
                                     value={selectedIntensity}
-                                    onChange={(e) => setSelectedIntensity(Number(e.target.value))}
+                                    onChange={(e) => {
+                                        const val = Number(e.target.value);
+                                        setSelectedIntensity(val);
+                                    }}
                                     style={{
                                         flex: 1,
                                         accentColor: "var(--color-martini)",
@@ -194,7 +302,7 @@ export default function PainMappingPage() {
                                 <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--color-moss-60)" }}>Berat</span>
                             </div>
                             <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.9rem", fontWeight: 700, color: "var(--color-moss)" }}>
-                                Level: {selectedIntensity}
+                                Level: {selectedIntensity} / 10
                             </div>
                         </div>
 
@@ -230,8 +338,8 @@ export default function PainMappingPage() {
                                                 fontWeight: 500,
                                             }}
                                         >
-                      {type.replace("_", " ")} ×{count}
-                    </span>
+                                            {type.replace("_", " ")} ×{count}
+                                        </span>
                                     ))}
                                 </div>
                                 <button
@@ -257,10 +365,10 @@ export default function PainMappingPage() {
                         )}
                     </div>
 
-                    {/* Middle Panel: 3D Canvas Canvas & Generator button */}
+                    {/* Middle Panel: 3D Canvas */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                         <div
-                            className=" model-container"
+                            className="model-container"
                             style={{
                                 height: "540px",
                                 borderRadius: "var(--radius-organic)",
@@ -273,51 +381,11 @@ export default function PainMappingPage() {
                             <HumanModel
                                 selectedPainType={selectedPainType}
                                 paintedPoints={paintedPoints}
-                                highlightedNodes={highlightedNodes}
+                                highlightedNodes={[]}
                                 onPaintPoint={handlePaintPoint}
-                                isInteractive={!loading}
+                                isInteractive={!isSubmitting}
                             />
                         </div>
-                        <button
-                            id="btn-generate-assessment"
-                            className="btn-primary"
-                            onClick={handleGenerateAssessment}
-                            disabled={paintedPoints.length === 0 || loading}
-                            style={{
-                                width: "100%",
-                                padding: "1rem 2rem",
-                                fontSize: "1rem",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "0.75rem",
-                                marginTop: "0.5rem"
-                            }}
-                        >
-                            {loading ? (
-                                <>
-                  <span
-                      style={{
-                          width: "22px",
-                          height: "22px",
-                          border: "3px solid rgba(255,255,255,0.4)",
-                          borderTopColor: "white",
-                          borderRadius: "50%",
-                          display: "inline-block",
-                          animation: "spin 0.8s linear infinite",
-                      }}
-                  />
-                                    Menganalisis...
-                                </>
-                            ) : (
-                                <>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                    Generate Assessment
-                                </>
-                            )}
-                        </button>
                         {paintedPoints.length === 0 && (
                             <p
                                 style={{
@@ -332,103 +400,218 @@ export default function PainMappingPage() {
                         )}
                     </div>
 
-                    {/* Right Panel: Results Dashboard */}
+                    {/* Right Panel: Flashcard Form */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                        {loading && (
-                            <div className="card animate-fade-in">
-                                <LoadingSpinner
-                                    message="Menganalisis dengan AI..."
-                                    subMessage="Memproses koordinat 3D dan jalur meridian..."
-                                />
-                            </div>
-                        )}
-                        {!loading && !assessment && (
-                            <div
-                                style={{
-                                    minHeight: "320px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    gap: "1.25rem",
-                                    backgroundColor: "var(--color-linen)",
-                                    borderRadius: "var(--radius-md)",
-                                    border: "1px solid #E5E7EB",
-                                    textAlign: "center",
-                                    padding: "2rem",
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: "56px",
-                                        height: "56px",
-                                        borderRadius: "50%",
-                                        backgroundColor: "var(--color-sunflower)",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke="#0D9488" strokeWidth="2" strokeLinecap="round" />
-                                    </svg>
+                        <div
+                            className="card"
+                            style={{
+                                minHeight: "450px",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                border: "1px solid #E5E7EB",
+                                transition: "all 0.3s ease",
+                                position: "relative"
+                            }}
+                        >
+                            {/* Progress Bar Atas */}
+                            <div style={{ marginBottom: "1.5rem" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-moss-80)" }}>
+                                        Skrining Mandiri
+                                    </span>
+                                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-martini)" }}>
+                                        {progressPercentage}%
+                                    </span>
                                 </div>
-                                <div>
-                                    <p
+                                <div style={{ width: "100%", height: "6px", backgroundColor: "var(--color-linen)", borderRadius: "999px", overflow: "hidden" }}>
+                                    <div style={{ width: `${progressPercentage}%`, height: "100%", backgroundColor: "var(--color-martini)", transition: "width 0.3s ease" }} />
+                                </div>
+                            </div>
+
+                            {/* Konten Flashcard */}
+                            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+
+                                {/* Step 0: Deskripsi */}
+                                {currentStep === 0 && (
+                                    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                                        <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--color-moss)" }}>
+                                            Tuliskan Deskripsi Keluhan Kesehatan Anda
+                                        </h3>
+                                        <p style={{ fontSize: "0.8rem", color: "var(--color-moss-60)", lineHeight: 1.4 }}>
+                                            Mohon berikan rincian mengenai gejala atau masalah kesehatan utama yang Anda rasakan secara detail.
+                                        </p>
+                                        <textarea
+                                            required
+                                            className="input"
+                                            placeholder="Contoh: Nyeri menjalar dari pinggang bawah ke bokong kanan sejak 3 hari lalu..."
+                                            rows={5}
+                                            value={healthDescription}
+                                            onChange={(e) => setHealthDescription(e.target.value)}
+                                            style={{ resize: "none", width: "100%", marginTop: "0.5rem" }}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Pertanyaan Tahap 1 (Darurat) */}
+                                {currentStep >= 1 && currentStep < 1 + TAHAP_1_EMERGENCY.length && (() => {
+                                    const qIndex = currentStep - 1;
+                                    const q = TAHAP_1_EMERGENCY[qIndex];
+                                    return (
+                                        <div className="animate-fade-in" style={{ textAlign: "center" }}>
+                                            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--color-moss)", marginTop: "0.75rem", lineHeight: 1.4, minHeight: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                {q.label}
+                                            </h3>
+                                            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1.5rem" }}>
+                                                <button type="button" onClick={() => handleAnswer(q.id, "ya", 1)} style={buttonYaStyle}>Ya</button>
+                                                <button type="button" onClick={() => handleAnswer(q.id, "tidak", 1)} style={buttonTidakStyle}>Tidak</button>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* Pertanyaan Tahap 2 (Mendesak) */}
+                                {currentStep >= 1 + TAHAP_1_EMERGENCY.length && currentStep < 1 + TAHAP_1_EMERGENCY.length + TAHAP_2_URGENT.length && (() => {
+                                    const qIndex = currentStep - (1 + TAHAP_1_EMERGENCY.length);
+                                    const q = TAHAP_2_URGENT[qIndex];
+                                    return (
+                                        <div className="animate-fade-in" style={{ textAlign: "center" }}>
+                                            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--color-moss)", marginTop: "0.75rem", lineHeight: 1.4, minHeight: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                {q.label}
+                                            </h3>
+                                            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1.5rem" }}>
+                                                <button type="button" onClick={() => handleAnswer(q.id, "ya", 2)} style={buttonYaStyle}>Ya</button>
+                                                <button type="button" onClick={() => handleAnswer(q.id, "tidak", 2)} style={buttonTidakStyle}>Tidak</button>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* Pertanyaan Tahap 3 (Kuning) */}
+                                {currentStep >= 1 + TAHAP_1_EMERGENCY.length + TAHAP_2_URGENT.length && currentStep < totalSteps && (() => {
+                                    const qIndex = currentStep - (1 + TAHAP_1_EMERGENCY.length + TAHAP_2_URGENT.length);
+                                    const q = TAHAP_3_YELLOW[qIndex];
+                                    return (
+                                        <div className="animate-fade-in" style={{ textAlign: "center" }}>
+                                            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--color-moss)", marginTop: "0.75rem", lineHeight: 1.4, minHeight: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                {q.label}
+                                            </h3>
+                                            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1.5rem" }}>
+                                                <button type="button" onClick={() => handleAnswer(q.id, "ya", 3)} style={buttonYaStyle}>Ya</button>
+                                                <button type="button" onClick={() => handleAnswer(q.id, "tidak", 3)} style={buttonTidakStyle}>Tidak</button>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* Selesai & Hasil Akhir (Presented calmly only at the end) */}
+                                {currentStep === totalSteps && (
+                                    <div className="animate-fade-in" style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "1rem" }}>
+                                        <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "var(--color-linen)", color: "var(--color-martini)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.5rem" }}>
+                                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </div>
+
+                                        <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--color-moss)" }}>Skrining Selesai</h3>
+
+                                        {/* Triage Feedback - Reassured and Non-Threatening */}
+                                        {finalStatus === "MERAH_DARURAT" && (
+                                            <div style={{ backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", fontSize: "0.85rem", color: "var(--color-moss)", textAlign: "left", lineHeight: 1.5 }}>
+                                                <strong>Catatan Kesehatan:</strong> Demi kenyamanan dan keselamatan Anda, beberapa keluhan yang terdeteksi membutuhkan pemeriksaan medis terlebih dahulu. Kami sangat menyarankan Anda berkonsultasi dengan dokter atau unit kesehatan terdekat sebelum menjadwalkan sesi terapi fisik atau pijat.
+                                            </div>
+                                        )}
+
+                                        {finalStatus === "MERAH_MENDESAK" && (
+                                            <div style={{ backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", fontSize: "0.85rem", color: "var(--color-moss)", textAlign: "left", lineHeight: 1.5 }}>
+                                                <strong>Saran Kami:</strong> Keluhan yang Anda rasakan sebaiknya dievaluasi secara langsung oleh dokter terlebih dahulu agar terapi pendukung ke depan dapat dirancang dengan aman dan optimal untuk Anda.
+                                            </div>
+                                        )}
+
+                                        {finalStatus === "KUNING" && (
+                                            <div style={{ backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", fontSize: "0.85rem", color: "var(--color-moss)", textAlign: "left", lineHeight: 1.5 }}>
+                                                <strong>Informasi:</strong> Tim kami akan meninjau catatan kesehatan Anda untuk menyesuaikan metode terapi yang paling aman dan nyaman sesuai dengan kondisi fisik Anda saat ini.
+                                            </div>
+                                        )}
+
+                                        {finalStatus === "HIJAU" && (
+                                            <p style={{ fontSize: "0.8rem", color: "var(--color-moss-60)", lineHeight: 1.5 }}>
+                                                Semua data skrining mandiri telah lengkap. Hasil pemetaan siap dikirimkan kepada tim kami untuk persiapan sesi Anda.
+                                            </p>
+                                        )}
+
+                                        <button
+                                            onClick={handleSubmitForm}
+                                            disabled={isSubmitting || paintedPoints.length === 0}
+                                            className="btn-primary"
+                                            style={{
+                                                width: "100%",
+                                                padding: "0.85rem 1.5rem",
+                                                fontSize: "1rem",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: "0.5rem",
+                                                marginTop: "0.5rem"
+                                            }}
+                                        >
+                                            {isSubmitting ? (
+                                                <>
+                                                    <span style={{ width: "20px", height: "20px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "white", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+                                                    Mengirim...
+                                                </>
+                                            ) : (
+                                                <>Kirim Assessment</>
+                                            )}
+                                        </button>
+                                        {paintedPoints.length === 0 && (
+                                            <p style={{ fontSize: "0.75rem", color: "red", marginTop: "-0.25rem" }}>
+                                                * Harap tandai setidaknya satu titik nyeri pada model 3D sebelum mengirim.
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
+                            </div>
+
+                            {/* Tombol Navigasi Bawah */}
+                            {currentStep < totalSteps && (
+                                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid #F3F4F6" }}>
+                                    <button
+                                        type="button"
+                                        onClick={handleBackStep}
+                                        disabled={currentStep === 0}
                                         style={{
-                                            fontFamily: "var(--font-primary)",
-                                            fontWeight: 600,
-                                            color: "var(--color-moss)",
-                                            fontSize: "0.95rem",
-                                            marginBottom: "0.25rem",
+                                            background: "none",
+                                            border: "none",
+                                            color: currentStep === 0 ? "#D1D5DB" : "var(--color-moss-60)",
+                                            cursor: currentStep === 0 ? "not-allowed" : "pointer",
+                                            fontSize: "0.85rem",
+                                            fontWeight: 600
                                         }}
                                     >
-                                        Hasil Assessment
-                                    </p>
-                                    <p
-                                        style={{
-                                            fontFamily: "var(--font-primary)",
-                                            fontSize: "0.8rem",
-                                            color: "var(--color-moss-60)",
-                                            maxWidth: "220px",
-                                            lineHeight: 1.55,
-                                        }}
-                                    >
-                                        Tandai area nyeri pada model 3D lalu klik &ldquo;Generate Assessment&rdquo;
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                        {!loading && assessment && (
-                            <div className="animate-fade-in">
-                                <div className="tab-bar">
-                                    <button
-                                        id="tab-medis"
-                                        className={`tab-item ${activeTab === "medis" ? "active" : ""}`}
-                                        onClick={() => setActiveTab("medis")}
-                                    >
-                                        🏥 Medis
+                                        ← Kembali
                                     </button>
-                                    <button
-                                        id="tab-tradisional"
-                                        className={`tab-item ${activeTab === "tradisional" ? "active" : ""}`}
-                                        onClick={() => setActiveTab("tradisional")}
-                                    >
-                                        🌿 Tradisional
-                                    </button>
+
+                                    {currentStep === 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleNextStep}
+                                            style={{
+                                                background: "none",
+                                                border: "none",
+                                                color: "var(--color-martini)",
+                                                cursor: "pointer",
+                                                fontSize: "0.85rem",
+                                                fontWeight: 700
+                                            }}
+                                        >
+                                            Lanjut →
+                                        </button>
+                                    )}
                                 </div>
-                                {activeTab === "medis" && (
-                                    <DashboardMedical data={assessment.medical} />
-                                )}
-                                {activeTab === "tradisional" && (
-                                    <DashboardTraditional
-                                        data={assessment.traditional}
-                                        onHighlightNodes={handleHighlightNodes}
-                                        activeHighlights={activeHighlights}
-                                    />
-                                )}
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
