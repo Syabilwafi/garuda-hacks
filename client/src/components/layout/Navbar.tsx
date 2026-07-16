@@ -105,9 +105,9 @@ export default function Navbar() {
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                 {!isLandingPage && (
                     <NavLink
-                        href="/clientDashboard"
+                        href="/dashboard"
                         label="Dashboard"
-                        active={pathname === "/clientDashboard"}
+                        active={pathname.includes("/dashboard")}
                     />
                 )}
 
@@ -135,8 +135,7 @@ export default function Navbar() {
                             style={{
                                 padding: "0.5rem 1.25rem",
                                 borderRadius: "9999px",
-                                border: "1.5px solid #6366F1",
-                                backgroundColor: "#6366F1",
+                                backgroundColor: "var(--color-martini)",
                                 fontFamily: "var(--font-primary)",
                                 fontSize: "0.95rem",
                                 fontWeight: 700,
@@ -294,7 +293,7 @@ export default function Navbar() {
                                     padding: "0.875rem",
                                     borderRadius: "8px",
                                     border: "none",
-                                    backgroundColor: "#6366F1",
+                                    backgroundColor: "var(--color-martini)",
                                     color: "white",
                                     fontFamily: "var(--font-primary)",
                                     fontWeight: 600,
@@ -323,7 +322,7 @@ export default function Navbar() {
                                         style={{
                                             background: "transparent",
                                             border: "none",
-                                            color: "#6366F1",
+                                            color: "var(--color-martini)",
                                             fontWeight: 600,
                                             cursor: "pointer",
                                             padding: 0,
