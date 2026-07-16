@@ -58,7 +58,7 @@ export default function LandingPage() {
           Pemetaan,<br />
           booking, dan<br />
           pijat aman dengan<br />
-          Press<span style={{color: "green"}}>Point</span>.
+          Press<span style={{color: "var(--color-martini)"}}>Point</span>
         </h1>
         
         <p style={{
@@ -71,13 +71,13 @@ export default function LandingPage() {
         }}>
           PressPoint adalah platform pemetaan nyeri berbasis 3D interaktif yang menjembatani komunikasi antara pasien dan terapis profesional.
         </p>
-        
-        <button 
+
+        <button
           onClick={() => setIsRoleModalOpen(true)}
           style={{
             display: "inline-block",
             textDecoration: "none",
-            backgroundColor: "#6366F1",
+            backgroundColor: "var(--color-martini)",
             color: "#FFFFFF",
             fontWeight: 700,
             fontSize: "1.05rem",
@@ -85,7 +85,7 @@ export default function LandingPage() {
             borderRadius: "9999px",
             border: "none",
             cursor: "pointer",
-            boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.4), 0 8px 10px -6px rgba(99, 102, 241, 0.1)"
+            boxShadow: "0 10px 25px -5px rgba(99, 201, 100, 0.4), 0 8px 10px -6px rgba(99, 201, 100, 0.1)"
           }}
         >
           Get Started
@@ -283,7 +283,7 @@ export default function LandingPage() {
                   padding: "0.875rem",
                   borderRadius: "8px",
                   border: "none",
-                  backgroundColor: "#6366F1",
+                  backgroundColor: "var(--color-martini)",
                   color: "white",
                   fontFamily: "var(--font-primary)",
                   fontWeight: 600,
