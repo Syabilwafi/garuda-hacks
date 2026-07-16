@@ -76,8 +76,7 @@ export default function DashboardTraditional({
                 padding: "0.625rem 1rem",
                 backgroundColor: "var(--color-linen)",
                 borderRadius: "999px",
-                border: "1px solid rgba(68, 67, 5, 0.1)",
-                boxShadow: "0 2px 4px rgba(68, 67, 5, 0.05)"
+                border: "1px solid #E5E7EB",
               }}
             >
               <div
@@ -87,7 +86,6 @@ export default function DashboardTraditional({
                   borderRadius: "50%",
                   backgroundColor: "var(--color-martini)",
                   flexShrink: 0,
-                  boxShadow: "0 0 10px var(--color-martini)",
                   animation: activeHighlights
                     ? "pulse-glow 1.5s ease-in-out infinite"
                     : "none",
@@ -149,11 +147,10 @@ export default function DashboardTraditional({
         </p>
       </div>
       <div
-        className="card hover-lift"
+        className="card"
         style={{
-          backgroundColor: "#fffdf0",
-          border: "1px solid rgba(175, 164, 6, 0.2)",
-          position: "relative"
+          backgroundColor: "#FEFCE8",
+          border: "1px solid #FDE047",
         }}
       >
         <p

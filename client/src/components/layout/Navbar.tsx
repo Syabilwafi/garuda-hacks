@@ -7,8 +7,8 @@ export default function Navbar() {
     <nav
       style={{
         height: "64px",
-        backgroundColor: "var(--color-moss)",
-        borderBottom: "3px solid var(--color-martini)",
+        backgroundColor: "var(--color-white)",
+        borderBottom: "1px solid #E5E7EB",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -16,7 +16,6 @@ export default function Navbar() {
         position: "sticky",
         top: 0,
         zIndex: 100,
-        boxShadow: "0 2px 16px rgba(68,67,5,0.25)",
       }}
     >
       <Link
@@ -30,40 +29,39 @@ export default function Navbar() {
       >
         <div
           style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
+            width: "32px",
+            height: "32px",
+            borderRadius: "8px",
             backgroundColor: "var(--color-martini)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            boxShadow: "0 0 0 3px rgba(242,236,155,0.25)",
           }}
         >
           <svg
-            width="20"
-            height="20"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <ellipse cx="12" cy="9" rx="5" ry="7" fill="#F2EC9B" opacity="0.85" />
-            <circle cx="12" cy="9" r="2.5" fill="#444305" />
-            <path d="M9 16 Q12 22 15 16" stroke="#F2EC9B" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            <ellipse cx="12" cy="9" rx="5" ry="7" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="12" cy="9" r="2.5" fill="#0D9488" />
+            <path d="M9 16 Q12 22 15 16" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="round" />
           </svg>
         </div>
         <span
           style={{
             fontFamily: "var(--font-primary)",
             fontWeight: 700,
-            fontSize: "1.25rem",
-            color: "var(--color-sunflower)",
+            fontSize: "1.15rem",
+            color: "var(--color-moss)",
             letterSpacing: "-0.02em",
           }}
         >
           Press
-          <span style={{ color: "var(--color-linen)", fontWeight: 400 }}>Point</span>
+          <span style={{ color: "var(--color-martini)", fontWeight: 600 }}>Point</span>
         </span>
       </Link>
       <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
@@ -95,11 +93,10 @@ function NavLink({
         fontFamily: "var(--font-primary)",
         fontSize: "0.9rem",
         fontWeight: active ? 600 : 400,
-        color: active ? "var(--color-sunflower)" : "var(--color-linen)",
-        backgroundColor: active ? "rgba(242,236,155,0.12)" : "transparent",
+        color: active ? "var(--color-martini)" : "var(--color-moss-60)",
+        backgroundColor: active ? "var(--color-sunflower)" : "transparent",
         textDecoration: "none",
         transition: "var(--transition-base)",
-        borderBottom: active ? "2px solid var(--color-martini)" : "2px solid transparent",
       }}
     >
       {label}

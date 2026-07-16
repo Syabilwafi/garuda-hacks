@@ -266,14 +266,13 @@ export default function EvaluationTimeline({
           }}
         >
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="#AFA406" strokeWidth="2" strokeLinecap="round" />
+            <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="#5EEAD4" strokeWidth="2" strokeLinecap="round" />
           </svg>
           <p
             style={{
               fontFamily: "var(--font-primary)",
               fontSize: "0.8rem",
-              color: "#DBDDB8",
-              opacity: 0.7,
+              color: "#9CA3AF",
             }}
           >
             Klik timestamp untuk loncat ke segmen

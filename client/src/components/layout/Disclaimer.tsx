@@ -3,8 +3,8 @@ export default function Disclaimer() {
     <footer
       role="contentinfo"
       style={{
-        backgroundColor: "var(--color-moss)",
-        borderTop: "3px solid var(--color-martini)",
+        backgroundColor: "var(--color-linen)",
+        borderTop: "1px solid #E5E7EB",
         padding: "2rem",
         marginTop: "auto",
       }}
@@ -21,9 +21,9 @@ export default function Disclaimer() {
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <div
             style={{
-              width: "24px",
-              height: "24px",
-              borderRadius: "50%",
+              width: "22px",
+              height: "22px",
+              borderRadius: "6px",
               backgroundColor: "var(--color-martini)",
               display: "flex",
               alignItems: "center",
@@ -31,10 +31,10 @@ export default function Disclaimer() {
               flexShrink: 0,
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-                stroke="#F2EC9B"
+                stroke="#FFFFFF"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -45,8 +45,8 @@ export default function Disclaimer() {
             style={{
               fontFamily: "var(--font-primary)",
               fontWeight: 600,
-              fontSize: "0.9rem",
-              color: "var(--color-sunflower)",
+              fontSize: "0.85rem",
+              color: "var(--color-moss)",
               textTransform: "uppercase",
               letterSpacing: "0.06em",
             }}
@@ -76,7 +76,7 @@ export default function Disclaimer() {
                 gap: "0.5rem",
                 fontFamily: "var(--font-primary)",
                 fontSize: "0.8rem",
-                color: "var(--color-linen)",
+                color: "var(--color-moss-60)",
                 lineHeight: 1.55,
               }}
             >
@@ -97,7 +97,7 @@ export default function Disclaimer() {
         <div
           style={{
             paddingTop: "1rem",
-            borderTop: "1px solid rgba(219,221,184,0.2)",
+            borderTop: "1px solid #E5E7EB",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -109,8 +109,7 @@ export default function Disclaimer() {
             style={{
               fontFamily: "var(--font-primary)",
               fontSize: "0.75rem",
-              color: "var(--color-linen)",
-              opacity: 0.6,
+              color: "var(--color-moss-60)",
             }}
           >
             © 2025 PressPoint — GarudaHacks Project

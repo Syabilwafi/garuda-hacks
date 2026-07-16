@@ -15,32 +15,18 @@ export default function TrainingPage() {
     >
       <div
         style={{
-          background: "linear-gradient(135deg, var(--color-moss) 0%, #2d2c03 100%)",
-          padding: "2rem 2rem 1.75rem",
-          position: "relative",
-          overflow: "hidden",
+          backgroundColor: "var(--color-white)",
+          borderBottom: "1px solid #E5E7EB",
+          padding: "2.5rem 2rem",
         }}
       >
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: "-40px",
-            bottom: "-40px",
-            width: "240px",
-            height: "240px",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(242,236,155,0.12) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }}
-        />
-        <div style={{ maxWidth: "900px", margin: "0 auto", position: "relative" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
             <div
               style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
+                width: "36px",
+                height: "36px",
+                borderRadius: "8px",
                 backgroundColor: "var(--color-martini)",
                 display: "flex",
                 alignItems: "center",
@@ -48,15 +34,14 @@ export default function TrainingPage() {
                 flexShrink: 0,
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="#F2EC9B" strokeWidth="2" strokeLinecap="round" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </div>
             <h1
               style={{
-                color: "var(--color-sunflower)",
-                fontSize: "1.75rem",
-                fontWeight: 700,
+                fontSize: "1.5rem",
+                fontWeight: 600,
               }}
             >
               Evaluasi Training Terapis
@@ -64,9 +49,8 @@ export default function TrainingPage() {
           </div>
           <p
             style={{
-              color: "var(--color-linen)",
+              color: "var(--color-moss-60)",
               fontSize: "0.9rem",
-              opacity: 0.8,
               maxWidth: "560px",
               lineHeight: 1.6,
             }}
