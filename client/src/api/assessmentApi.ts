@@ -1,33 +1,42 @@
 import type { PainType } from "@/components/ui/PainTypeSelector";
+import { apiClient, delay } from "@/utils";
+import { API_CONFIG, ERROR_MESSAGES } from "@/constants";
+
 export interface Coordinate3D {
   x: number;
   y: number;
   z: number;
 }
+
 export interface PainMark {
   coordinate3D: Coordinate3D;
   painType: PainType;
-  intensity?: number; 
+  intensity?: number;
 }
+
 export interface MedicalAssessment {
   complaint: string;
   indication: string;
   affectedAreas: string[];
 }
+
 export interface HighlightedNode {
   id: string;
   label: string;
   coordinate3D: Coordinate3D;
 }
+
 export interface TraditionalAssessment {
   highlightedNodes: HighlightedNode[];
   instructions: string;
   contraindications: string[];
 }
+
 export interface AssessmentResponse {
   medical: MedicalAssessment;
   traditional: TraditionalAssessment;
 }
+
 const MOCK_RESPONSES: Record<string, AssessmentResponse> = {
   DULL_ACHE: {
     medical: {
@@ -125,31 +134,28 @@ const MOCK_RESPONSES: Record<string, AssessmentResponse> = {
     },
   },
 };
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+
+function getMockResponse(painType: string): AssessmentResponse {
+  return MOCK_RESPONSES[painType] ?? MOCK_RESPONSES.DULL_ACHE;
+}
+
 export async function generateAssessment(
   patientId: string,
   painMarks: PainMark[]
 ): Promise<AssessmentResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/assessment/generate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ patientId, painMarks }),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.warn(
-      "[assessmentApi] Backend tidak tersedia, menggunakan fallback mock:",
-      error
+    return await apiClient<AssessmentResponse>(
+      API_CONFIG.ASSESSMENT_ENDPOINT,
+      {
+        method: "POST",
+        body: JSON.stringify({ patientId, painMarks }),
+      }
     );
+  } catch (error) {
+    console.warn("[assessmentApi] Using fallback mock response:", error);
     const primaryPainType = painMarks[0]?.painType ?? "DULL_ACHE";
-    const mockData = MOCK_RESPONSES[primaryPainType] ?? MOCK_RESPONSES.DULL_ACHE;
-    await new Promise((r) => setTimeout(r, 1800));
+    const mockData = getMockResponse(primaryPainType);
+    await delay(API_CONFIG.MOCK_DELAY_MS);
     return mockData;
   }
 }

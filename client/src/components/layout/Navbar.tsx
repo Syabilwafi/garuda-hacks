@@ -105,9 +105,9 @@ export default function Navbar() {
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                 {!isLandingPage && (
                     <NavLink
-                        href="/clientDashboard"
+                        href="/dashboard"
                         label="Dashboard"
-                        active={pathname === "/clientDashboard"}
+                        active={pathname.includes("/dashboard")}
                     />
                 )}
 
