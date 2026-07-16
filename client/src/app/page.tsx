@@ -55,7 +55,7 @@ export default function LandingPage() {
             margin: "0 0 1.5rem 0"
           }} 
         >
-          Skrining,<br />
+          Pemetaan,<br />
           booking, dan<br />
           pijat aman dengan<br />
           Press<span style={{color: "green"}}>Point</span>.
@@ -69,7 +69,7 @@ export default function LandingPage() {
           lineHeight: "1.6",
           maxWidth: "750px"
         }}>
-          PressPoint menghadirkan sistem triase cerdas sebagai gerbang keselamatan sebelum Anda melakukan booking terapi pijat profesional.
+          PressPoint adalah platform pemetaan nyeri berbasis 3D interaktif yang menjembatani komunikasi antara pasien dan terapis profesional.
         </p>
         
         <button 
