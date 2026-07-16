@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 
+type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT";
+
 interface Appointment {
     id: string;
     patientName: string;
@@ -9,6 +11,7 @@ interface Appointment {
     date: string;
     time: string;
     status: "Upcoming" | "Completed" | "Cancelled";
+    triageStatus: TriageStatus;
     notes?: string;
 }
 
@@ -25,7 +28,8 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
         date: "24 Juli 2026",
         time: "10:00 - 11:00 WIB",
         status: "Upcoming",
-        notes: "Keluhan nyeri punggung bawah kronis sejak 3 minggu lalu.",
+        triageStatus: "MERAH_DARURAT",
+        notes: "Keluhan nyeri punggung bawah kronis sejak 3 minggu lalu. Mengalami mati rasa di sekitar genital dan paha dalam setelah insiden angkat beban berat.",
     },
     {
         id: "APT-003",
@@ -34,7 +38,8 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
         date: "24 Juli 2026",
         time: "11:00 - 12:00 WIB",
         status: "Upcoming",
-        notes: "Terapi pemulihan pasca stroke ringan.",
+        triageStatus: "KUNING",
+        notes: "Terapi pemulihan pasca stroke ringan. Menggunakan obat pengencer darah rutin.",
     },
     {
         id: "APT-002",
@@ -43,6 +48,7 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
         date: "12 Juni 2026",
         time: "14:00 - 15:30 WIB",
         status: "Completed",
+        triageStatus: "HIJAU",
         notes: "Sesi akupunktur ke-4. Progres ketegangan leher membaik.",
     },
 ];
@@ -78,18 +84,53 @@ export default function TherapistDashboard() {
         }
     };
 
+    // Helper to extract styling properties for each specific screening classification badge
+    const getTriageBadgeStyles = (status: TriageStatus) => {
+        switch (status) {
+            case "MERAH_DARURAT":
+                return {
+                    bg: "#FEF2F2",
+                    text: "#991B1B",
+                    border: "#FCA5A5",
+                    label: "EMERGENCY"
+                };
+            case "MERAH_MENDESAK":
+                return {
+                    bg: "#FFF7ED",
+                    text: "#C2410C",
+                    border: "#FFEDD5",
+                    label: "RED"
+                };
+            case "KUNING":
+                return {
+                    bg: "var(--color-sunflower)",
+                    text: "var(--color-martini-dark)",
+                    border: "var(--color-martini)",
+                    label: "YELLOW"
+                };
+            case "HIJAU":
+            default:
+                return {
+                    bg: "#F0FDF4",
+                    text: "#16A34A",
+                    border: "#BBF7D0",
+                    label: "GREEN"
+                };
+        }
+    };
+
     return (
         <div style={{ minHeight: "calc(100vh - 64px)", backgroundColor: "var(--color-white)" }}>
             {/* Header Banner */}
             <div style={{ backgroundColor: "var(--color-white)", borderBottom: "1px solid #E5E7EB", padding: "2.5rem 1.5rem" }}>
                 <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
                     <div>
-                        <h1 style={{ marginBottom: "0.5rem", fontSize: "clamp(1.5rem, 4vw, 1.875rem)" }}>Portal Praktisi / Terapis</h1>
-                        <p style={{ color: "var(--color-moss-60)", fontSize: "0.9rem" }}>Kelola jadwal konsultasi harian dan pantau rekam medis pain mapping pasien.</p>
+                        <h1 style={{ marginBottom: "0.5rem", fontSize: "clamp(1.5rem, 4vw, 1.875rem)" }}>Your Dashboard</h1>
+                        <p style={{ color: "var(--color-moss-60)", fontSize: "0.9rem" }}>Kelola jadwal konsultasi harian dan pantau tingkat urgensi triase skrining keselamatan pasien.</p>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
                         <span style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", backgroundColor: "#F0FDF4", color: "#15803D", borderRadius: "var(--radius-sm)", fontWeight: 600, border: "1px solid #BBF7D0" }}>
-                            🟢 Aktif
+                            Aktif
                         </span>
                     </div>
                 </div>
@@ -102,7 +143,7 @@ export default function TherapistDashboard() {
                     <style dangerouslySetInnerHTML={{__html: `
                         @media (min-width: 1024px) {
                             .responsive-therapist-grid {
-                                grid-template-columns: 300px 1fr 380px !important;
+                                grid-template-columns: 280px 1fr 400px !important;
                             }
                         }
                     `}} />
@@ -141,48 +182,67 @@ export default function TherapistDashboard() {
                             <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Jadwal Konsultasi Hari Ini</h2>
 
                             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                                {appointments.map((apt) => (
-                                    <div
-                                        key={apt.id}
-                                        onClick={() => setSelectedApt(apt)}
-                                        className="card-linen"
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                            flexWrap: "wrap",
-                                            gap: "1rem",
-                                            padding: "1.25rem",
-                                            cursor: "pointer",
-                                            borderLeft: selectedApt?.id === apt.id ? "4px solid var(--color-martini)" : "1px solid #E5E7EB",
-                                            transition: "all 0.15s ease"
-                                        }}
-                                    >
-                                        <div>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
-                                                <h3 style={{ fontSize: "1rem", margin: 0 }}>{apt.patientName}</h3>
-                                                <span style={{ fontSize: "0.75rem", color: "var(--color-moss-60)" }}>ID: {apt.medicalRecordId}</span>
+                                {appointments.map((apt) => {
+                                    const triageConfig = getTriageBadgeStyles(apt.triageStatus);
+
+                                    return (
+                                        <div
+                                            key={apt.id}
+                                            onClick={() => setSelectedApt(apt)}
+                                            className="card-linen"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                                flexWrap: "wrap",
+                                                gap: "1rem",
+                                                padding: "1.25rem",
+                                                cursor: "pointer",
+                                                borderLeft: selectedApt?.id === apt.id ? "4px solid var(--color-martini)" : "1px solid #E5E7EB",
+                                                transition: "all 0.15s ease"
+                                            }}
+                                        >
+                                            <div>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+                                                    <h3 style={{ fontSize: "1rem", margin: 0 }}>{apt.patientName}</h3>
+                                                    <span style={{ fontSize: "0.75rem", color: "var(--color-moss-60)" }}>ID: {apt.medicalRecordId}</span>
+                                                </div>
+                                                <p style={{ fontSize: "0.85rem", color: "var(--color-moss-80)", display: "flex", gap: "1rem", margin: 0 }}>
+                                                    <span>{apt.date}</span>
+                                                    <span>{apt.time} </span>
+                                                    <br/>
+                                                </p>
+                                                {/* Mini Triage Preview Indicator Tag */}
+                                                <span style={{
+                                                    display: "inline-block",
+                                                    fontSize: "0.7rem",
+                                                    fontWeight: 700,
+                                                    marginTop: "0.5rem",
+                                                    padding: "0.1rem 0.4rem",
+                                                    borderRadius: "4px",
+                                                    backgroundColor: triageConfig.bg,
+                                                    color: triageConfig.text,
+                                                    border: `1px solid ${triageConfig.border}`
+                                                }}>
+                                                    {apt.triageStatus.replace("_", " ")}
+                                                </span>
                                             </div>
-                                            <p style={{ fontSize: "0.85rem", color: "var(--color-moss-80)", display: "flex", gap: "1rem", margin: 0 }}>
-                                                <span>📅 {apt.date}</span>
-                                                <span>⏰ {apt.time}</span>
-                                            </p>
+                                            <div>
+                                                <span style={{
+                                                    fontSize: "0.75rem",
+                                                    fontWeight: 600,
+                                                    padding: "0.25rem 0.75rem",
+                                                    borderRadius: "var(--radius-sm)",
+                                                    backgroundColor: apt.status === "Upcoming" ? "var(--color-sunflower)" : "#F0FDF4",
+                                                    color: apt.status === "Upcoming" ? "var(--color-martini)" : "#15803D",
+                                                    border: `1px solid ${apt.status === "Upcoming" ? "var(--color-martini)" : "#BBF7D0"}`
+                                                }}>
+                                                    {apt.status}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span style={{
-                                                fontSize: "0.75rem",
-                                                fontWeight: 600,
-                                                padding: "0.25rem 0.75rem",
-                                                borderRadius: "var(--radius-sm)",
-                                                backgroundColor: apt.status === "Upcoming" ? "var(--color-sunflower)" : "#F0FDF4",
-                                                color: apt.status === "Upcoming" ? "var(--color-martini)" : "#15803D",
-                                                border: `1px solid ${apt.status === "Upcoming" ? "var(--color-martini)" : "#BBF7D0"}`
-                                            }}>
-                                                {apt.status}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -231,65 +291,106 @@ export default function TherapistDashboard() {
 
                     </div>
 
-                    {/* Right Column: Dynamic Patient Case Viewer */}
+                    {/* Right Column: Dynamic Patient Case Viewer & Triage Inspector */}
                     <div className="card" style={{ position: "sticky", top: "20px" }}>
                         <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Detail Rekam Medis Sesi</h2>
 
                         {selectedApt ? (
-                            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                                <div>
-                                    <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Pasien</label>
-                                    <h3 style={{ fontSize: "1.2rem", margin: "0.15rem 0 0 0" }}>{selectedApt.patientName}</h3>
-                                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--color-moss-60)" }}>Nomor RM: {selectedApt.medicalRecordId}</p>
-                                </div>
+                            (() => {
+                                const triageConfig = getTriageBadgeStyles(selectedApt.triageStatus);
+                                const isEmergency = selectedApt.triageStatus === "MERAH_DARURAT" || selectedApt.triageStatus === "MERAH_MENDESAK";
 
-                                <div>
-                                    <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Waktu Sesi</label>
-                                    <p style={{ margin: "0.15rem 0 0 0", fontSize: "0.9rem" }}>📅 {selectedApt.date} ({selectedApt.time})</p>
-                                </div>
+                                return (
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                                        <div>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Pasien</label>
+                                            <h3 style={{ fontSize: "1.2rem", margin: "0.15rem 0 0 0" }}>{selectedApt.patientName}</h3>
+                                            <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--color-moss-60)" }}>Nomor RM: {selectedApt.medicalRecordId}</p>
+                                        </div>
 
-                                <div>
-                                    <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Catatan Awal Pasien</label>
-                                    <div className="card-linen" style={{ padding: "0.75rem", fontSize: "0.85rem", marginTop: "0.25rem", fontStyle: "italic" }}>
-                                        "{selectedApt.notes || "Tidak ada catatan kustom."}"
+                                        {/* Dynamic Triage Emergency Level Component Block */}
+                                        <div>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase", display: "block", marginBottom: "0.35rem" }}>
+                                                Tingkat Darurat Skrining Mandiri
+                                            </label>
+                                            <div style={{
+                                                padding: "0.85rem",
+                                                borderRadius: "var(--radius-sm)",
+                                                backgroundColor: triageConfig.bg,
+                                                color: triageConfig.text,
+                                                border: `1px solid ${triageConfig.border}`,
+                                                fontSize: "0.85rem",
+                                                fontWeight: 700,
+                                                textAlign: "center"
+                                            }}>
+                                                {triageConfig.label}
+                                            </div>
+
+                                            {isEmergency && (
+                                                <div style={{
+                                                    marginTop: "0.5rem",
+                                                    padding: "0.65rem",
+                                                    borderRadius: "var(--radius-sm)",
+                                                    backgroundColor: "#FFF5F5",
+                                                    borderLeft: "3px solid #DC2626",
+                                                    fontSize: "0.75rem",
+                                                    color: "#991B1B",
+                                                    lineHeight: 1.4
+                                                }}>
+                                                    ⚠️ <strong>Warning:</strong> Pasien menjawab "YA" pada indikator Red Flag keselamatan. Evaluasi kontraindikasi manipulatf fisik secara mendalam sebelum memulai intervensi.
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Waktu Sesi</label>
+                                            <p style={{ margin: "0.15rem 0 0 0", fontSize: "0.9rem" }}>{selectedApt.date} ({selectedApt.time})</p>
+                                        </div>
+
+                                        <div>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Catatan Awal Pasien & Gejala</label>
+                                            <div className="card-linen" style={{ padding: "0.75rem", fontSize: "0.85rem", marginTop: "0.25rem", fontStyle: "italic" }}>
+                                                "{selectedApt.notes || "Tidak ada catatan kustom."}"
+                                            </div>
+                                        </div>
+
+                                        {/* Integration Link to Dashboard Pain Mapping */}
+                                        <div style={{ borderTop: "1px solid #E5E7EB", paddingTop: "1.25rem" }}>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", display: "block", marginBottom: "0.5rem", textTransform: "uppercase" }}>
+                                                Anatomi & Data Pemetaan Nyeri
+                                            </label>
+                                            <a
+                                                href="/painMapping"
+                                                className="btn-secondary"
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    gap: "0.5rem",
+                                                    fontSize: "0.85rem",
+                                                    textDecoration: "none",
+                                                    textAlign: "center"
+                                                }}
+                                            >
+                                                View Assessment Result
+                                            </a>
+                                        </div>
+
+                                        {selectedApt.status === "Upcoming" && (
+                                            <button
+                                                onClick={() => handleCompleteAppointment(selectedApt.id)}
+                                                className="btn-primary"
+                                                style={{ width: "100%", marginTop: "0.5rem" }}
+                                            >
+                                                Finish Consultation
+                                            </button>
+                                        )}
                                     </div>
-                                </div>
-
-                                {/* Integration Link to Dashboard Pain Mapping */}
-                                <div style={{ borderTop: "1px solid #E5E7EB", paddingTop: "1.25rem" }}>
-                                    <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", display: "block", marginBottom: "0.5rem", textTransform: "uppercase" }}>
-                                        Anatomi & Data Pemetaan Nyeri
-                                    </label>
-                                    <a
-                                        href={`/dashboard/client/painMapping?patientId=${selectedApt?.medicalRecordId}`}
-                                        className="btn-secondary"
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            gap: "0.5rem",
-                                            fontSize: "0.85rem",
-                                            textDecoration: "none",
-                                            textAlign: "center"
-                                        }}
-                                    >
-                                        🔍 Buka Berkas Pain Mapping
-                                    </a>
-                                </div>
-
-                                {selectedApt.status === "Upcoming" && (
-                                    <button
-                                        onClick={() => handleCompleteAppointment(selectedApt.id)}
-                                        className="btn-primary"
-                                        style={{ width: "100%", marginTop: "0.5rem" }}
-                                    >
-                                        Selesaikan Sesi Konsultasi
-                                    </button>
-                                )}
-                            </div>
+                                );
+                            })()
                         ) : (
                             <div style={{ textAlign: "center", padding: "4rem 1rem", color: "var(--color-moss-60)" }}>
-                                <p style={{ fontSize: "0.9rem" }}>Silakan pilih salah satu jadwal janji temu untuk memuat berkas rekam medis pasien.</p>
+                                <p style={{ fontSize: "0.9rem" }}>Silakan pilih salah satu jadwal janji temu untuk memuat berkas rekam medis dan visualisasi tingkat kedaruratan assessment triase pasien.</p>
                             </div>
                         )}
                     </div>
