@@ -133,7 +133,7 @@ export default function ClientDashboard() {
         setBookingTime("");
         setSearchTerm("");
 
-        router.push("/painMapping");
+        router.push("/dashboard/client/painMapping");
     };
 
     return (

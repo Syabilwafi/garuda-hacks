@@ -152,7 +152,7 @@ export default function PainMappingPage() {
             setTriageAnswers({});
             setPaintedPoints([]);
 
-            router.push("/clientDashboard");
+            router.push("/dashboard/client");
         } catch (error) {
             console.error("Submission failed", error);
         } finally {
@@ -193,6 +193,7 @@ export default function PainMappingPage() {
         cursor: "pointer"
     };
 
+    //@ts-ignore
     return (
         <div
             style={{
