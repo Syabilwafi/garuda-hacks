@@ -7,6 +7,8 @@ export default function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loginRole, setLoginRole] = useState<"pasien" | "therapist" | null>(null);
   const [modalMode, setModalMode] = useState<"login" | "register">("login");
+  const [showSnk, setShowSnk] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const openModal = (role: "pasien" | "therapist") => {
     setLoginRole(role);
@@ -18,6 +20,8 @@ export default function Navbar() {
     setIsModalOpen(false);
     setLoginRole(null);
     setModalMode("login");
+    setShowSnk(false);
+    setShowPrivacy(false);
   };
 
   useEffect(() => {
@@ -139,9 +143,55 @@ export default function Navbar() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            gap: "2rem",
             zIndex: 1000,
           }}
         >
+          {showSnk && (
+            <div style={{
+              backgroundColor: "#FFFFFF",
+              color: "#111827",
+              padding: "2rem",
+              borderRadius: "16px",
+              width: "100%",
+              maxWidth: "320px",
+              height: "450px",
+              overflowY: "auto",
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+              fontFamily: "var(--font-primary)",
+              position: "relative"
+            }}>
+              <button
+                onClick={() => setShowSnk(false)}
+                style={{
+                  position: "absolute",
+                  top: "1rem",
+                  right: "1rem",
+                  background: "transparent",
+                  border: "none",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                  color: "#6B7280",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "24px",
+                  height: "24px",
+                }}
+              >
+                &#x2715;
+              </button>
+              <h3 style={{ marginBottom: "1rem", fontSize: "1.25rem", fontWeight: 700, paddingRight: "1.5rem" }}>Syarat & Ketentuan</h3>
+              <p style={{ fontSize: "0.85rem", lineHeight: 1.6, textAlign: "justify" }}>
+                Ini adalah teks simulasi Syarat dan Ketentuan. Dengan menggunakan layanan PressPoint, Anda setuju untuk terikat oleh syarat dan ketentuan ini. Kami berhak mengubah syarat ini kapan saja. Terus menggunakan aplikasi ini setelah perubahan berarti Anda menerima syarat baru tersebut.
+                <br /><br />
+                Penyedia layanan (Terapis) wajib menjaga standar keamanan. Pengguna (Pasien) wajib memberikan informasi yang akurat mengenai titik nyeri mereka agar pemetaan bisa maksimal.
+                <br /><br />
+                Pihak PressPoint tidak bertanggung jawab atas kerugian fisik yang diakibatkan oleh kelalaian pihak ketiga. PressPoint bertindak sebagai platform penghubung.
+              </p>
+            </div>
+          )}
+          
           <div
             style={{
               backgroundColor: "white",
@@ -296,16 +346,61 @@ export default function Navbar() {
               lineHeight: "1.5"
             }}>
               Dengan masuk atau mendaftar, Anda menyetujui{" "}
-              <a href="#" style={{ color: "#0066cc", textDecoration: "none", fontWeight: 500 }}>
+              <button onClick={() => { setShowSnk(!showSnk); setShowPrivacy(false); }} style={{ color: "#0066cc", textDecoration: "none", fontWeight: 500, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "inherit" }}>
                 Syarat & Ketentuan
-              </a>
+              </button>
               {" "}dan{" "}
-              <a href="#" style={{ color: "#0066cc", textDecoration: "none", fontWeight: 500 }}>
+              <button onClick={() => { setShowPrivacy(!showPrivacy); setShowSnk(false); }} style={{ color: "#0066cc", textDecoration: "none", fontWeight: 500, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "inherit" }}>
                 Kebijakan Privasi
-              </a>
+              </button>
               {" "}PressPoint.
             </p>
           </div>
+
+          {showPrivacy && (
+            <div style={{
+              backgroundColor: "#FFFFFF",
+              color: "#111827",
+              padding: "2rem",
+              borderRadius: "16px",
+              width: "100%",
+              maxWidth: "320px",
+              height: "450px",
+              overflowY: "auto",
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+              fontFamily: "var(--font-primary)",
+              position: "relative"
+            }}>
+              <button
+                onClick={() => setShowPrivacy(false)}
+                style={{
+                  position: "absolute",
+                  top: "1rem",
+                  right: "1rem",
+                  background: "transparent",
+                  border: "none",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                  color: "#6B7280",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "24px",
+                  height: "24px",
+                }}
+              >
+                &#x2715;
+              </button>
+              <h3 style={{ marginBottom: "1rem", fontSize: "1.25rem", fontWeight: 700, paddingRight: "1.5rem" }}>Kebijakan Privasi</h3>
+              <p style={{ fontSize: "0.85rem", lineHeight: 1.6, textAlign: "justify" }}>
+                Privasi Anda sangat penting bagi kami. Kami tidak akan membagikan data medis atau profil nyeri Anda kepada pihak ketiga tanpa persetujuan eksplisit Anda.
+                <br /><br />
+                Data 3D yang Anda masukkan akan dienkripsi dan hanya dapat diakses oleh terapis yang Anda berikan izin (saat Anda melakukan booking).
+                <br /><br />
+                Kami menggunakan cookie dan teknologi pelacakan standar untuk meningkatkan pengalaman UX. Anda berhak menghapus akun Anda beserta semua data terkait kapan saja.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </nav>
