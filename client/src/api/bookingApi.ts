@@ -85,10 +85,18 @@ export const bookingApi = {
 
     async createBooking(payload: BookingPayload): Promise<BookingResponse | null> {
         try {
+            const cleanEndTime = payload.endTime.replace(" WIB", "");
+
+            const cleanedPayload = {
+                ...payload,
+                endTime: cleanEndTime
+            };
+
             const response = await apiClient<any>('/api/bookings', {
                 method: 'POST',
-                body: JSON.stringify(payload),
+                body: JSON.stringify(cleanedPayload),
             });
+
             return response.booking;
         } catch (error) {
             console.error('Error creating booking:', error);

@@ -157,14 +157,22 @@ export default function ClientDashboard() {
             try {
                 const bookings = await bookingApi.getUserBookings(user.id);
                 if (bookings && bookings.length > 0) {
-                    const mapped = bookings.map(b => ({
-                        id: b.id,
-                        professionalName: b.therapistName,
-                        role: b.therapistSpecialization,
-                        date: b.date,
-                        time: `${b.startTime} - ${b.endTime}`,
-                        status: b.status as "Upcoming" | "Completed" | "Cancelled",
-                    }));
+                    const mapped = bookings.map(b => {
+                        const formatTime = (timeStr: string) => {
+                            if (!timeStr) return "";
+                            const parts = timeStr.split(":");
+                            return parts.length >= 2 ? `${parts[0]}:${parts[1]}` : timeStr;
+                        };
+
+                        return {
+                            id: b.id,
+                            professionalName: b.therapistName,
+                            role: b.therapistSpecialization,
+                            date: b.date,
+                            time: `${formatTime(b.startTime)} - ${formatTime(b.endTime)} WIB`,
+                            status: b.status as "Upcoming" | "Completed" | "Cancelled",
+                        };
+                    });
                     setAppointments([...mapped, ...INITIAL_APPOINTMENTS]);
                     setIsApiAvailable(true);
                 }
@@ -190,13 +198,21 @@ export default function ClientDashboard() {
 
         try {
             if (isApiAvailable && user?.id) {
-                const timeParts = bookingTime.split(' - ');
+                // Ensure all " WIB" or other timezone suffixes are stripped
+                const cleanTimeRange = bookingTime.replace(/\s*[A-Z]{3,4}\s*$/i, "").trim(); // Removes " WIB"
+                const timeParts = cleanTimeRange.split(' - '); // e.g. ["08:00", "09:00"]
+
+                if (timeParts.length !== 2) {
+                    throw new Error('Format jam tidak valid');
+                }
+
                 const result = await bookingApi.createBooking({
                     userId: user.id,
                     therapistId: selectedProf.id,
+                    availabilityId: null, // Always send null if not matching an explicit database schedule ID
                     date: bookingDate,
-                    startTime: timeParts[0],
-                    endTime: timeParts[1],
+                    startTime: timeParts[0].trim(), // e.g. "08:00"
+                    endTime: timeParts[1].trim(),   // e.g. "09:00"
                 });
 
                 if (result) {
