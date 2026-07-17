@@ -1,6 +1,6 @@
 import type { PainType } from "@/components/ui/PainTypeSelector";
-import { apiClient, delay } from "@/utils";
-import { API_CONFIG, ERROR_MESSAGES } from "@/constants";
+import { delay } from "@/utils";
+import { API_CONFIG } from "@/constants";
 
 export interface Coordinate3D {
   x: number;
@@ -143,19 +143,9 @@ export async function generateAssessment(
   patientId: string,
   painMarks: PainMark[]
 ): Promise<AssessmentResponse> {
-  try {
-    return await apiClient<AssessmentResponse>(
-      API_CONFIG.ASSESSMENT_ENDPOINT,
-      {
-        method: "POST",
-        body: JSON.stringify({ patientId, painMarks }),
-      }
-    );
-  } catch (error) {
-    console.warn("[assessmentApi] Using fallback mock response:", error);
-    const primaryPainType = painMarks[0]?.painType ?? "DULL_ACHE";
-    const mockData = getMockResponse(primaryPainType);
-    await delay(API_CONFIG.MOCK_DELAY_MS);
-    return mockData;
-  }
+  // Using mock data instead of backend
+  const primaryPainType = painMarks[0]?.painType ?? "DULL_ACHE";
+  const mockData = getMockResponse(primaryPainType);
+  await delay(API_CONFIG.MOCK_DELAY_MS);
+  return mockData;
 }

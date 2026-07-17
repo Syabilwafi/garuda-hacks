@@ -1,4 +1,5 @@
-import { apiClient } from '@/utils';
+// Mock storage for screening assessments
+let screeningAssessmentsStorage: Record<string, any> = {};
 
 export async function submitScreeningAssessment(payload: {
     userId: string;
@@ -9,11 +10,21 @@ export async function submitScreeningAssessment(payload: {
     paintedPoints: any[];
     healthDescription: string;
 }) {
-    return await apiClient(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/screening/submit`,
-        {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        }
-    );
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            // Store the assessment in mock storage
+            screeningAssessmentsStorage[payload.bookingId] = {
+                ...payload,
+                submittedAt: new Date().toISOString(),
+                id: `SA-${Date.now()}`
+            };
+
+            resolve({
+                success: true,
+                message: "Screening assessment submitted successfully",
+                assessmentId: `SA-${Date.now()}`,
+                data: payload
+            });
+        }, 500);
+    });
 }

@@ -55,27 +55,11 @@ const MOCK_EVALUATION: EvaluationResponse = {
     },
   ],
 };
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+
 export async function evaluateVideo(
   formData: FormData
 ): Promise<EvaluationResponse> {
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/training/evaluate`, {
-      method: "POST",
-      body: formData,
-      signal: AbortSignal.timeout(60000), 
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.warn(
-      "[trainingApi] Backend unavailable, using fallback mock:",
-      error
-    );
-    await new Promise((r) => setTimeout(r, 3500));
-    return MOCK_EVALUATION;
-  }
+  // Using mock evaluation data instead of backend
+  await new Promise((r) => setTimeout(r, 2000));
+  return MOCK_EVALUATION;
 }

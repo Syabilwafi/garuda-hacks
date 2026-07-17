@@ -1,4 +1,3 @@
-import { apiClient } from "@/utils/apiClient";
 import { API_CONFIG, ERROR_MESSAGES } from "@/constants";
 
 export interface AuthResponse {
@@ -90,57 +89,65 @@ const MOCK_THERAPIST_SIGNUP: AuthResponse = {
 };
 
 export async function loginClient(payload: LoginPayload): Promise<AuthResponse> {
-  return await apiClient<AuthResponse>("/api/auth/login-client", {
-    method: "POST",
-    body: JSON.stringify(payload),
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Mock login - accept any email/password for demo
+      if (payload.email && payload.password) {
+        resolve(MOCK_CLIENT_LOGIN);
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    }, 800);
   });
 }
 
 export async function loginTherapist(payload: LoginPayload): Promise<AuthResponse> {
-  return await apiClient<AuthResponse>("/api/auth/login-therapist", {
-    method: "POST",
-    body: JSON.stringify(payload),
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Mock login - accept any email/password for demo
+      if (payload.email && payload.password) {
+        resolve(MOCK_THERAPIST_LOGIN);
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    }, 800);
   });
 }
 
 export async function signupClient(payload: ClientSignupPayload): Promise<AuthResponse> {
-  return await apiClient<AuthResponse>("/api/auth/register-client", {
-    method: "POST",
-    body: JSON.stringify(payload),
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_CLIENT_SIGNUP);
+    }, 1000);
   });
 }
 
 export async function signupTherapist(payload: TherapistSignupPayload): Promise<AuthResponse> {
-  return await apiClient<AuthResponse>("/api/auth/register-therapist", {
-    method: "POST",
-    body: JSON.stringify(payload),
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_THERAPIST_SIGNUP);
+    }, 1000);
   });
 }
 
 export async function getClientProfile(token: string) {
-  try {
-    return await apiClient("/api/auth/client/profile", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (error) {
-    console.warn("[authApi] Failed to fetch client profile:", error);
-    throw error;
-  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        ...MOCK_CLIENT_LOGIN.user,
+        role: "CLIENT"
+      });
+    }, 500);
+  });
 }
 
 export async function getTherapistProfile(token: string) {
-  try {
-    return await apiClient("/api/auth/therapist/profile", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (error) {
-    console.warn("[authApi] Failed to fetch therapist profile:", error);
-    throw error;
-  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        ...MOCK_THERAPIST_LOGIN.user,
+        role: "THERAPIST"
+      });
+    }, 500);
+  });
 }
