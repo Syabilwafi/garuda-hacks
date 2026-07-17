@@ -1,5 +1,4 @@
 import { apiClient, delay } from "@/utils";
-import { API_CONFIG } from "@/constants";
 
 export interface PainPoint {
   location: string;
@@ -63,7 +62,7 @@ export async function generateClinicalNote(
 ): Promise<ClinicalNoteResponse> {
   try {
     return await apiClient<ClinicalNoteResponse>(
-      `${API_CONFIG.BASE_URL}/api/clinical/translate`,
+      `/api/clinical/translate`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -80,7 +79,7 @@ export async function getClinicalNote(
 ): Promise<ClinicalNoteDetail> {
   try {
     return await apiClient<ClinicalNoteDetail>(
-      `${API_CONFIG.BASE_URL}/api/clinical/appointment/${appointmentId}`,
+      `/api/clinical/appointment/${appointmentId}`,
       {
         method: "GET",
       }
@@ -107,7 +106,7 @@ export async function getClinicalNotesByTherapist(
 }> {
   try {
     return await apiClient(
-      `${API_CONFIG.BASE_URL}/api/clinical/therapist/${therapistId}`,
+      `/api/clinical/therapist/${therapistId}`,
       {
         method: "GET",
       }
