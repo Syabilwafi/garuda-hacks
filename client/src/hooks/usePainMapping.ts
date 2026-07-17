@@ -3,18 +3,18 @@ import type { PainMarkData } from "@/components/3d/HumanModel";
 import type { PainType } from "@/components/ui/PainTypeSelector";
 
 interface UsePainMappingReturn {
-  selectedPainType: PainType | null;
+  selectedPainType: PainType;
   selectedIntensity: number;
   paintedPoints: PainMarkData[];
   painTypeCount: Record<string, number>;
-  setSelectedPainType: (type: PainType | null) => void;
+  setSelectedPainType: (type: PainType) => void;
   setSelectedIntensity: (intensity: number) => void;
   handlePaintPoint: (point: PainMarkData) => void;
   handleClearMarks: () => void;
 }
 
 export const usePainMapping = (defaultPainType: PainType = "THROBBING"): UsePainMappingReturn => {
-  const [selectedPainType, setSelectedPainType] = useState<PainType | null>(defaultPainType);
+  const [selectedPainType, setSelectedPainType] = useState<PainType>(defaultPainType);
   const [selectedIntensity, setSelectedIntensity] = useState(3);
   const [paintedPoints, setPaintedPoints] = useState<PainMarkData[]>([]);
 

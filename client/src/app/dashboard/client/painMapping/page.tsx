@@ -64,7 +64,7 @@ export default function PainMappingPage() {
     const router = useRouter();
     const { user } = useAuth();
 
-    const [selectedPainType, setSelectedPainType] = useState<PainType | null>("THROBBING");
+    const [selectedPainType, setSelectedPainType] = useState<PainType>("THROBBING");
     const [selectedIntensity, setSelectedIntensity] = useState<number>(3);
     const [paintedPoints, setPaintedPoints] = useState<PainMarkData[]>([]);
 

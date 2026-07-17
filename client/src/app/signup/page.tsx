@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -48,7 +48,7 @@ const labelStyle = {
   marginBottom: "0.75rem",
 };
 
-export default function SignupPage() {
+function SignupFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signup, isLoading, error, clearError } = useAuth();
@@ -790,5 +790,13 @@ export default function SignupPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading...</div>}>
+      <SignupFormContent />
+    </Suspense>
   );
 }
