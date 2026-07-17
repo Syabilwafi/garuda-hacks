@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/context/AuthContext";
+import { bookingApi } from "@/api/bookingApi";
 
 type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT";
 
@@ -64,9 +66,51 @@ const INITIAL_SLOTS: TimeSlotSetting[] = [
 ];
 
 export default function TherapistDashboard() {
+    const { user } = useAuth();
     const [appointments, setAppointments] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
     const [slots, setSlots] = useState<TimeSlotSetting[]>(INITIAL_SLOTS);
     const [selectedApt, setSelectedApt] = useState<Appointment | null>(null);
+    const [isSavingAvailability, setIsSavingAvailability] = useState(false);
+    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+    // Debounce effect to save availability changes to server
+    useEffect(() => {
+        if (!user?.id) return;
+
+        // Clear existing timer
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        // Set new timer to save after 2 seconds of idle time
+        setIsSavingAvailability(true);
+        debounceTimer.current = setTimeout(async () => {
+            try {
+                const slotsToSave = slots.map(slot => ({
+                    time: slot.time,
+                    isAvailable: slot.isAvailable,
+                }));
+
+                const success = await bookingApi.updateTherapistAvailability(user.id, slotsToSave);
+                if (success) {
+                    console.log('Availability saved successfully');
+                } else {
+                    console.error('Failed to save availability');
+                }
+            } catch (error) {
+                console.error('Error saving availability:', error);
+            } finally {
+                setIsSavingAvailability(false);
+            }
+        }, 2000);
+
+        // Cleanup timer on unmount
+        return () => {
+            if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current);
+            }
+        };
+    }, [slots, user?.id]);
 
     // Toggle slot availability status
     const toggleSlotAvailability = (index: number) => {
@@ -154,24 +198,24 @@ export default function TherapistDashboard() {
                     <div className="card" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                         <div style={{ textAlign: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: "1.25rem" }}>
                             <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--color-martini)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.75rem", fontWeight: "600", margin: "0 auto 1rem" }}>
-                                LA
+                                {user?.fullName?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'T'}
                             </div>
-                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>Dr. Lana Arisandi</h3>
-                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>Spesialis Akupunktur</span>
+                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>{user?.fullName || 'Terapis'}</h3>
+                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>{user?.specialization || 'Terapis Profesional'}</span>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>NPA ID (IDI)</label>
-                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)", fontWeight: "600" }}>IDI-99412582</p>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Email</label>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)", fontWeight: "600" }}>{user?.email || '-'}</p>
                             </div>
                             <div>
                                 <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Spesialisasi</label>
-                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>Kebidanan & Akupunktur Medis</p>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.specialization || '-'}</p>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Jadwal Rutin</label>
-                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>Senin - Jumat</p>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>ID Pengguna</label>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.id || '-'}</p>
                             </div>
                         </div>
                     </div>
@@ -250,8 +294,29 @@ export default function TherapistDashboard() {
 
                         {/* Live Availability Management */}
                         <div className="card">
-                            <h2 style={{ fontSize: "1.25rem", marginBottom: "0.25rem" }}>Atur Ketersediaan Jam Kerja</h2>
-                            <p style={{ color: "var(--color-moss-60)", fontSize: "0.8rem", marginBottom: "1.25rem" }}>Klik pada slot jam untuk mengubah status operasional Anda secara real-time.</p>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                                <h2 style={{ fontSize: "1.25rem", margin: 0 }}>Atur Ketersediaan Jam Kerja</h2>
+                                {isSavingAvailability && (
+                                    <span style={{ fontSize: "0.75rem", color: "var(--color-martini)", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                        <span style={{
+                                            display: "inline-block",
+                                            width: "8px",
+                                            height: "8px",
+                                            borderRadius: "50%",
+                                            backgroundColor: "var(--color-martini)",
+                                            animation: "pulse 1.5s ease-in-out infinite"
+                                        }} />
+                                        Menyimpan...
+                                    </span>
+                                )}
+                            </div>
+                            <p style={{ color: "var(--color-moss-60)", fontSize: "0.8rem", marginBottom: "1.25rem" }}>Klik pada slot jam untuk mengubah status operasional Anda. Perubahan akan disimpan secara otomatis.</p>
+                            <style>{`
+                                @keyframes pulse {
+                                    0%, 100% { opacity: 1; }
+                                    50% { opacity: 0.5; }
+                                }
+                            `}</style>
 
                             <div style={{
                                 display: "grid",

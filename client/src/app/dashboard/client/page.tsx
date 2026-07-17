@@ -290,24 +290,24 @@ export default function ClientDashboard() {
                     <div className="card" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                         <div style={{ textAlign: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: "1.25rem" }}>
                             <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--color-martini)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.75rem", fontWeight: "600", margin: "0 auto 1rem" }}>
-                                JD
+                                {user?.fullName?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'}
                             </div>
-                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>Jane Doe</h3>
-                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>Pasien Demo</span>
+                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>{user?.fullName || 'Pengguna'}</h3>
+                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>Pasien</span>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                             <div>
                                 <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Email</label>
-                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>janedoe@example.com</p>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.email || '-'}</p>
                             </div>
                             <div>
                                 <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Nomor Telepon</label>
-                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>+62 812-3456-7890</p>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.phoneNumber || '-'}</p>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>ID Rekam Medis</label>
-                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)", fontWeight: "600" }}>RM-2026-00412</p>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>ID Pengguna</label>
+                                <p style={{ fontSize: "0.9rem", color: "var(--color-moss)", fontWeight: "600" }}>{user?.id || '-'}</p>
                             </div>
                         </div>
                     </div>
