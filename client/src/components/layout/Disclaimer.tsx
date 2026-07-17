@@ -5,7 +5,7 @@ export default function Disclaimer() {
       style={{
         backgroundColor: "var(--color-linen)",
         borderTop: "1px solid #E5E7EB",
-        padding: "2rem",
+        padding: "1.5rem",
         marginTop: "auto",
       }}
     >
@@ -59,7 +59,7 @@ export default function Disclaimer() {
             listStyle: "none",
             display: "flex",
             flexDirection: "column",
-            gap: "0.5rem",
+            gap: "0.3rem",
           }}
         >
           {[

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import Image from "next/image"
 
 type SignupRole = "CLIENT" | "THERAPIST" | null;
 
@@ -319,40 +320,17 @@ export default function SignupPage() {
               marginBottom: "1.5rem",
             }}
           >
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "8px",
-                backgroundColor: "var(--color-martini)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
+              <div style={{
+                  width: "48px",
+                  height: "48px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
               }}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
               >
-                <ellipse cx="12" cy="9" rx="5" ry="7" fill="#FFFFFF" opacity="0.9" />
-                <circle cx="12" cy="9" r="2.5" fill="#0D9488" />
-                <path d="M9 16 Q12 22 15 16" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span
-              style={{
-                fontWeight: 700,
-                fontSize: "1.1rem",
-                color: "#111111",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Press<span style={{ color: "var(--color-martini)", fontWeight: 600 }}>Point</span>
-            </span>
+                  <Image src="/logo.png" alt="Logo" width={48} height={48} />
+              </div>
           </Link>
           <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.5rem", color: "#111111" }}>
             Daftar

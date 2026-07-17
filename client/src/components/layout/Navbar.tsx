@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
+import Image from 'next/image'
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -45,27 +46,15 @@ export default function Navbar() {
             >
                 <div
                     style={{
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "8px",
-                        backgroundColor: "var(--color-martini)",
+                        width: "64px",
+                        height: "64px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                     }}
                 >
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <ellipse cx="12" cy="9" rx="5" ry="7" fill="#FFFFFF" opacity="0.9" />
-                        <circle cx="12" cy="9" r="2.5" fill="#0D9488" />
-                        <path d="M9 16 Q12 22 15 16" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-                    </svg>
+                    <Image src="/logo.png" alt="Logo" width={48} height={48} />
                 </div>
                 <span
                     style={{
@@ -133,7 +122,7 @@ export default function Navbar() {
                     </>
                 )}
 
-                {/* Authenticated - Show user menu */}
+                {/* Authenticated */}
                 {isAuthenticated && (
                     <div style={{ position: "relative" }}>
                         <button
