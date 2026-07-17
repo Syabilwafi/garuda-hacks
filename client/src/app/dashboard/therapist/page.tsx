@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/context/AuthContext";
 import { bookingApi } from "@/api/bookingApi";
+import ClinicalNoteModal from "@/components/ClinicalNoteModal";
 
 type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT";
 
@@ -71,6 +72,7 @@ export default function TherapistDashboard() {
     const [slots, setSlots] = useState<TimeSlotSetting[]>(INITIAL_SLOTS);
     const [selectedApt, setSelectedApt] = useState<Appointment | null>(null);
     const [isSavingAvailability, setIsSavingAvailability] = useState(false);
+    const [isClinicalNoteModalOpen, setIsClinicalNoteModalOpen] = useState(false);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
     // Debounce effect to save availability changes to server
@@ -421,8 +423,26 @@ export default function TherapistDashboard() {
                                             </div>
                                         </div>
 
-                                        {/* Integration Link to Dashboard Pain Mapping */}
+                                        {/* Clinical Note Viewer */}
                                         <div style={{ borderTop: "1px solid #E5E7EB", paddingTop: "1.25rem" }}>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", display: "block", marginBottom: "0.5rem", textTransform: "uppercase" }}>
+                                                Catatan Klinis (SOAP)
+                                            </label>
+                                            <button
+                                                onClick={() => setIsClinicalNoteModalOpen(true)}
+                                                className="btn-primary"
+                                                style={{
+                                                    width: "100%",
+                                                    fontSize: "0.85rem",
+                                                    textAlign: "center"
+                                                }}
+                                            >
+                                                📋 Lihat Catatan Klinis
+                                            </button>
+                                        </div>
+
+                                        {/* Integration Link to Dashboard Pain Mapping */}
+                                        <div style={{ paddingTop: "1rem" }}>
                                             <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", display: "block", marginBottom: "0.5rem", textTransform: "uppercase" }}>
                                                 Anatomi & Data Pemetaan Nyeri
                                             </label>
@@ -464,6 +484,16 @@ export default function TherapistDashboard() {
 
                 </div>
             </div>
+
+            {/* Clinical Note Modal */}
+            {selectedApt && (
+                <ClinicalNoteModal
+                    isOpen={isClinicalNoteModalOpen}
+                    appointmentId={selectedApt.id}
+                    patientName={selectedApt.patientName}
+                    onClose={() => setIsClinicalNoteModalOpen(false)}
+                />
+            )}
         </div>
         </ProtectedRoute>
     );

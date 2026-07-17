@@ -149,5 +149,23 @@ export const Booking = {
         if (error) {
             throw new Error(`Failed to delete booking: ${error.message}`);
         }
+    },
+
+    async updateTriageData(bookingId, triageData) {
+        const { data, error } = await supabase
+            .from('bookings')
+            .update({
+                triage_status: triageData.triage_status,
+                triage_answers: triageData.triage_answers,
+                pain_intensity: triageData.pain_intensity,
+                notes: triageData.notes,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', bookingId)
+            .select()
+            .single();
+
+        if (error) throw new Error(`Failed to update triage data: ${error.message}`);
+        return data;
     }
 };
