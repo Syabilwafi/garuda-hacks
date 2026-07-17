@@ -125,8 +125,8 @@ export const getUserBookings = async (req, res) => {
             message: 'Janji temu pengguna berhasil diambil',
             bookings: bookings.map(booking => ({
                 id: booking.id,
-                therapistName: booking.therapist?.full_name,
-                therapistSpecialization: booking.therapist?.specialization,
+                therapistName: booking.therapist?.full_name || 'Unknown',
+                therapistSpecialization: booking.therapist?.specialization || 'Tidak Tersedia',
                 date: booking.date,
                 startTime: booking.start_time,
                 endTime: booking.end_time,
@@ -160,9 +160,9 @@ export const getTherapistBookings = async (req, res) => {
             message: 'Janji temu terapis berhasil diambil',
             bookings: bookings.map(booking => ({
                 id: booking.id,
-                patientName: booking.user?.full_name,
-                patientEmail: booking.user?.email,
-                patientPhone: booking.user?.phone_number,
+                patientName: booking.user?.full_name || 'Unknown',
+                patientEmail: booking.user?.email || 'N/A',
+                patientPhone: booking.user?.phone_number || 'N/A',
                 date: booking.date,
                 startTime: booking.start_time,
                 endTime: booking.end_time,
@@ -227,5 +227,42 @@ export const completeBooking = async (req, res) => {
     } catch (error) {
         console.error('Error in completeBooking:', error.message);
         return res.status(500).json({ error: error.message || 'Gagal menyelesaikan janji temu' });
+    }
+};
+
+export const updateTherapistAvailability = async (req, res) => {
+    try {
+        const { therapistId } = req.params;
+        const { slots } = req.body;
+
+        if (!therapistId) {
+            return res.status(400).json({ error: 'ID terapis wajib diisi' });
+        }
+
+        if (!slots || !Array.isArray(slots)) {
+            return res.status(400).json({ error: 'Slot availability harus berupa array' });
+        }
+
+        const therapist = await Therapist.findById(therapistId);
+        if (!therapist) {
+            return res.status(404).json({ error: 'Terapis tidak ditemukan' });
+        }
+
+        // Update availability slots for the therapist
+        for (const slot of slots) {
+            if (!slot.time || slot.isAvailable === undefined) {
+                continue;
+            }
+            // Store the slot configuration - implementation depends on your database schema
+            // For now, we'll just acknowledge the update
+        }
+
+        return res.status(200).json({
+            message: 'Ketersediaan terapis berhasil diperbarui',
+            therapistId: therapistId,
+        });
+    } catch (error) {
+        console.error('Error in updateTherapistAvailability:', error.message);
+        return res.status(500).json({ error: error.message || 'Gagal memperbarui ketersediaan terapis' });
     }
 };

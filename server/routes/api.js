@@ -19,6 +19,7 @@ import {
     getTherapistBookings,
     cancelBooking,
     completeBooking,
+    updateTherapistAvailability,
 } from '../controllers/bookingController.js';
 import { verifyToken, verifyRole } from '../middleware/authMiddleware.js';
 
@@ -42,6 +43,7 @@ router.post('/assessment/generate', generateAssessmentController);
 // Booking routes
 router.get('/therapists', getAllTherapists);
 router.get('/therapists/:therapistId/availability', getTherapistAvailability);
+router.put('/therapists/:therapistId/availability', updateTherapistAvailability);
 router.post('/bookings', createBooking);
 router.get('/bookings/user/:userId', getUserBookings);
 router.get('/bookings/therapist/:therapistId', getTherapistBookings);

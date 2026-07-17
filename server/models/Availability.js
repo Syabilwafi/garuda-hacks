@@ -31,7 +31,8 @@ export const Availability = {
             .eq('therapist_id', therapistId)
             .eq('is_available', true)
             .order('date', { ascending: true })
-            .order('start_time', { ascending: true });
+            .order('start_time', { ascending: true })
+            ;
 
         if (error) {
             throw new Error(`Failed to fetch availability: ${error.message}`);

@@ -41,8 +41,8 @@ export const Booking = {
             .from('bookings')
             .select(`
                 *,
-                therapist:therapist_id (id, full_name, email, specialization),
-                user:user_id (id, full_name, email, phone_number)
+                therapist:therapist_id(id, full_name, email, specialization),
+                user:user_id(id, full_name, email, phone_number)
             `)
             .eq('id', id)
             .single();
@@ -62,11 +62,12 @@ export const Booking = {
             .from('bookings')
             .select(`
                 *,
-                therapist:therapist_id (id, full_name, email, specialization)
+                therapist:therapist_id(id, full_name, email, specialization)
             `)
             .eq('user_id', userId)
             .order('date', { ascending: false })
-            .order('start_time', { ascending: false });
+            .order('start_time', { ascending: false })
+            ;
 
         if (error) {
             throw new Error(`Failed to fetch user bookings: ${error.message}`);
@@ -80,11 +81,12 @@ export const Booking = {
             .from('bookings')
             .select(`
                 *,
-                user:user_id (id, full_name, email, phone_number)
+                user:user_id(id, full_name, email, phone_number)
             `)
             .eq('therapist_id', therapistId)
             .order('date', { ascending: false })
-            .order('start_time', { ascending: false });
+            .order('start_time', { ascending: false })
+            ;
 
         if (error) {
             throw new Error(`Failed to fetch therapist bookings: ${error.message}`);
@@ -98,7 +100,7 @@ export const Booking = {
             .from('bookings')
             .select(`
                 *,
-                user:user_id (id, full_name, email, phone_number)
+                user:user_id(id, full_name, email, phone_number)
             `)
             .eq('therapist_id', therapistId)
             .eq('date', date)
