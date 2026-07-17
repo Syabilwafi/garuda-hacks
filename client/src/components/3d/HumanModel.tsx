@@ -234,7 +234,7 @@ export default function HumanModel({
             textAlign: "center",
           }}
         >
-          Klik pada tubuh untuk menandai area nyeri - Drag untuk memutar
+          Click on the body to mark the area of pain – Drag to rotate.
         </div>
       )}
     </div>

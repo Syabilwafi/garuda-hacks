@@ -13,44 +13,44 @@ export interface EvaluationResponse {
 }
 const MOCK_EVALUATION: EvaluationResponse = {
   evaluationId: "eval-mock-001",
-  status: "PERLU_PERBAIKAN",
+  status: "NEEDS_IMPROVEMENT",
   summary:
-    "Teknik dasar sudah menunjukkan pemahaman yang baik terhadap area target. Namun, tekanan pada area leher perlu dikurangi dan kecepatan gerakan di beberapa segmen perlu disesuaikan untuk menghindari risiko cedera.",
+    "Basic technique shows good understanding of the target area. However, pressure on the neck area needs to be reduced and movement speed in some segments needs adjustment to avoid injury risk.",
   feedbackTimeline: [
     {
       timestampSeconds: 5.0,
-      bodyAreaTargeted: "Pundak Kanan",
-      note: "Posisi tangan dan arah pijatan sudah tepat. Tekanan ringan sesuai standar.",
+      bodyAreaTargeted: "Right Shoulder",
+      note: "Hand position and massage direction are correct. Light pressure as per standard.",
       severity: "INFO",
     },
     {
       timestampSeconds: 12.5,
-      bodyAreaTargeted: "Trapezius Dextra",
-      note: "Tekanan terlalu kuat di area dekat tulang belakang leher. Kurangi intensitas 30–40%.",
+      bodyAreaTargeted: "Right Trapezius",
+      note: "Pressure too strong near the neck spine. Reduce intensity by 30–40%.",
       severity: "WARNING",
     },
     {
       timestampSeconds: 22.0,
-      bodyAreaTargeted: "Leher Belakang (Cervical)",
-      note: "PENTING: Teknik pijatan langsung pada tulang belakang leher berisiko cedera. Harus dihindari.",
+      bodyAreaTargeted: "Neck (Cervical)",
+      note: "IMPORTANT: Direct massage technique on the neck spine risks injury. Must be avoided.",
       severity: "CRITICAL",
     },
     {
       timestampSeconds: 34.0,
-      bodyAreaTargeted: "Pundak Belakang",
-      note: "Posisi tangan dan arah pijatan sudah tepat. Ritme sudah konsisten.",
+      bodyAreaTargeted: "Back Shoulder",
+      note: "Hand position and massage direction are correct. Rhythm is consistent.",
       severity: "INFO",
     },
     {
       timestampSeconds: 45.5,
-      bodyAreaTargeted: "Punggung Atas (Thoracic)",
-      note: "Gerakan terlalu cepat di area ini. Perlambat agar tekanan lebih terdistribusi merata.",
+      bodyAreaTargeted: "Upper Back (Thoracic)",
+      note: "Movement too fast in this area. Slow down for more even pressure distribution.",
       severity: "WARNING",
     },
     {
       timestampSeconds: 58.0,
-      bodyAreaTargeted: "Scapula Sinistra",
-      note: "Teknik effleurage di area tulang belikat sudah sesuai. Pertahankan.",
+      bodyAreaTargeted: "Left Scapula",
+      note: "Effleurage technique on the scapular area is appropriate. Maintain it.",
       severity: "INFO",
     },
   ],
@@ -72,7 +72,7 @@ export async function evaluateVideo(
     return await response.json();
   } catch (error) {
     console.warn(
-      "[trainingApi] Backend tidak tersedia, menggunakan fallback mock:",
+      "[trainingApi] Backend unavailable, using fallback mock:",
       error
     );
     await new Promise((r) => setTimeout(r, 3500));

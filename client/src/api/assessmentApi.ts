@@ -40,96 +40,96 @@ export interface AssessmentResponse {
 const MOCK_RESPONSES: Record<string, AssessmentResponse> = {
   DULL_ACHE: {
     medical: {
-      complaint: "Nyeri tumpul di area Cervical & Trapezius dekstra",
-      indication: "Ketegangan otot servikal — kemungkinan akibat postur buruk atau kelelahan berlebih",
+      complaint: "Dull pain in Cervical & Right Trapezius area",
+      indication: "Cervical muscle tension — likely due to poor posture or excessive fatigue",
       affectedAreas: ["Cervical", "Trapezius Dextra", "Levator Scapulae"],
     },
     traditional: {
       highlightedNodes: [
-        { id: "shoulder-back-01", label: "Titik Pundak Belakang (Jianjing)", coordinate3D: { x: 0.15, y: 1.4, z: -0.05 } },
-        { id: "thumb-base-01", label: "Pangkal Ibu Jari (Hegu)", coordinate3D: { x: 0.35, y: 0.7, z: 0.1 } },
-        { id: "neck-side-01", label: "Titik Leher Samping (Fengchi)", coordinate3D: { x: 0.08, y: 1.62, z: -0.12 } },
+        { id: "shoulder-back-01", label: "Shoulder Back Point (Jianjing)", coordinate3D: { x: 0.15, y: 1.4, z: -0.05 } },
+        { id: "thumb-base-01", label: "Thumb Base Point (Hegu)", coordinate3D: { x: 0.35, y: 0.7, z: 0.1 } },
+        { id: "neck-side-01", label: "Neck Side Point (Fengchi)", coordinate3D: { x: 0.08, y: 1.62, z: -0.12 } },
       ],
-      instructions: "Pijat ringan secara melingkar pada area pundak belakang selama 3-5 menit. Tekan titik pangkal ibu jari dengan ibu jari tangan berlawanan. Hindari tekanan keras.",
+      instructions: "Massage gently in circular motions on the back shoulder area for 3-5 minutes. Press the thumb base point with the opposite hand's thumb. Avoid hard pressure.",
       contraindications: [
-        "Jangan pijat langsung di area tulang belakang bagian leher.",
-        "Hindari pijatan kuat jika terdapat rasa kebas atau kesemutan.",
-        "Konsultasikan ke dokter jika nyeri berlangsung lebih dari 3 hari.",
+        "Do not massage directly on the neck spine.",
+        "Avoid strong massage if there is numbness or tingling.",
+        "Consult a doctor if pain persists for more than 3 days.",
       ],
     },
   },
   SHARP: {
     medical: {
-      complaint: "Nyeri tajam di area lumbar dan punggung bawah",
-      indication: "Kemungkinan strain otot erector spinae atau iritasi sendi facet",
+      complaint: "Sharp pain in lumbar and lower back area",
+      indication: "Possible strain of erector spinae muscle or facet joint irritation",
       affectedAreas: ["Lumbar L4-L5", "Erector Spinae", "Quadratus Lumborum"],
     },
     traditional: {
       highlightedNodes: [
-        { id: "lower-back-01", label: "Titik Punggung Bawah (Shenshu)", coordinate3D: { x: 0.08, y: 0.9, z: -0.15 } },
-        { id: "foot-sole-01", label: "Telapak Kaki (Yongquan)", coordinate3D: { x: 0.1, y: 0.05, z: 0.05 } },
+        { id: "lower-back-01", label: "Lower Back Point (Shenshu)", coordinate3D: { x: 0.08, y: 0.9, z: -0.15 } },
+        { id: "foot-sole-01", label: "Foot Sole Point (Yongquan)", coordinate3D: { x: 0.1, y: 0.05, z: 0.05 } },
       ],
-      instructions: "Kompres hangat pada area punggung bawah selama 15 menit. Pijat lembut titik Shenshu di kedua sisi tulang belakang pinggang.",
+      instructions: "Apply warm compress on the lower back area for 15 minutes. Gently massage the Shenshu point on both sides of the lumbar spine.",
       contraindications: [
-        "Jangan dipijat jika nyeri disertai rasa lemah pada kaki.",
-        "Hindari gerakan membungkuk mendadak.",
-        "Segera ke dokter jika nyeri menjalar ke tungkai.",
+        "Do not massage if pain is accompanied by weakness in the legs.",
+        "Avoid sudden bending movements.",
+        "See a doctor immediately if pain radiates to the limbs.",
       ],
     },
   },
   BURNING: {
     medical: {
-      complaint: "Sensasi panas dan terbakar di area bahu dan lengan atas",
-      indication: "Kemungkinan iritasi saraf perifer (neuralgia) atau tendinitis rotator cuff",
+      complaint: "Sensation of heat and burning in shoulder and upper arm area",
+      indication: "Possible peripheral nerve irritation (neuralgia) or rotator cuff tendinitis",
       affectedAreas: ["Deltoid", "Rotator Cuff", "Supraspinatus"],
     },
     traditional: {
       highlightedNodes: [
-        { id: "shoulder-front-01", label: "Titik Bahu Depan (Jianyu)", coordinate3D: { x: 0.18, y: 1.3, z: 0.1 } },
-        { id: "elbow-01", label: "Titik Siku (Quchi)", coordinate3D: { x: 0.3, y: 1.1, z: 0.05 } },
+        { id: "shoulder-front-01", label: "Front Shoulder Point (Jianyu)", coordinate3D: { x: 0.18, y: 1.3, z: 0.1 } },
+        { id: "elbow-01", label: "Elbow Point (Quchi)", coordinate3D: { x: 0.3, y: 1.1, z: 0.05 } },
       ],
-      instructions: "Kompres dingin pada area bahu yang panas selama 10-15 menit. Lakukan peregangan ringan dengan gerakan melingkar pada sendi bahu.",
+      instructions: "Apply cold compress on the hot shoulder area for 10-15 minutes. Perform light stretching with circular movements of the shoulder joint.",
       contraindications: [
-        "Jangan lakukan pijatan pada area yang terasa sangat panas atau bengkak.",
-        "Hindari aktivitas mengangkat beban berat.",
+        "Do not massage areas that feel very hot or swollen.",
+        "Avoid activities involving lifting heavy loads.",
       ],
     },
   },
   THROBBING: {
     medical: {
-      complaint: "Nyeri berdenyut di area kepala dan leher",
-      indication: "Kemungkinan tension headache atau migrain yang terkait ketegangan otot servikal",
+      complaint: "Throbbing pain in head and neck area",
+      indication: "Possible tension headache or migraine related to cervical muscle tension",
       affectedAreas: ["Temporalis", "Occipitalis", "Sternocleidomastoid"],
     },
     traditional: {
       highlightedNodes: [
-        { id: "temple-01", label: "Titik Pelipis (Taiyang)", coordinate3D: { x: 0.1, y: 1.7, z: 0.1 } },
-        { id: "crown-01", label: "Titik Puncak Kepala (Baihui)", coordinate3D: { x: 0, y: 1.8, z: 0 } },
-        { id: "between-eyes-01", label: "Titik Diantara Alis (Yintang)", coordinate3D: { x: 0, y: 1.68, z: 0.1 } },
+        { id: "temple-01", label: "Temple Point (Taiyang)", coordinate3D: { x: 0.1, y: 1.7, z: 0.1 } },
+        { id: "crown-01", label: "Crown Point (Baihui)", coordinate3D: { x: 0, y: 1.8, z: 0 } },
+        { id: "between-eyes-01", label: "Between Eyebrows Point (Yintang)", coordinate3D: { x: 0, y: 1.68, z: 0.1 } },
       ],
-      instructions: "Tekan lembut titik Taiyang di kedua sisi pelipis secara bersamaan. Pijat melingkar pada puncak kepala. Istirahat di ruangan dengan pencahayaan redup.",
+      instructions: "Gently press the Taiyang points on both sides of the temples simultaneously. Massage in circular motions on the crown. Rest in a dimly lit room.",
       contraindications: [
-        "Jangan tekan terlalu keras pada area kepala.",
-        "Hindari pijatan jika sakit kepala sangat parah atau mendadak.",
-        "Segera ke IGD jika sakit kepala terburuk yang pernah dirasakan.",
+        "Do not press too hard on the head area.",
+        "Avoid massage if headache is severe or sudden.",
+        "Go to the ER immediately if this is the worst headache you have ever experienced.",
       ],
     },
   },
   PRESSURE: {
     medical: {
-      complaint: "Rasa tekanan dan sesak di area dada atas dan punggung tengah",
-      indication: "Kemungkinan ketegangan otot intercostal atau postur kyphosis",
+      complaint: "Sensation of pressure and tightness in upper chest and mid-back area",
+      indication: "Possible intercostal muscle tension or kyphotic posture",
       affectedAreas: ["Pectoralis Minor", "Rhomboids", "Thoracic T4-T6"],
     },
     traditional: {
       highlightedNodes: [
-        { id: "chest-center-01", label: "Titik Tengah Dada (Shanzhong)", coordinate3D: { x: 0, y: 1.25, z: 0.12 } },
-        { id: "upper-back-01", label: "Titik Punggung Tengah (Feishu)", coordinate3D: { x: 0.06, y: 1.2, z: -0.13 } },
+        { id: "chest-center-01", label: "Center Chest Point (Shanzhong)", coordinate3D: { x: 0, y: 1.25, z: 0.12 } },
+        { id: "upper-back-01", label: "Mid-Back Point (Feishu)", coordinate3D: { x: 0.06, y: 1.2, z: -0.13 } },
       ],
-      instructions: "Tarik napas dalam dan perlahan. Pijat lembut titik tengah dada dengan jari telunjuk. Lakukan peregangan dada dengan membuka kedua lengan ke samping.",
+      instructions: "Take deep and slow breaths. Gently massage the center chest point with your index finger. Perform chest stretching by opening both arms to the sides.",
       contraindications: [
-        "SEGERA ke dokter jika disertai sesak napas berat, keringat dingin, atau nyeri menjalar ke lengan kiri.",
-        "Jangan abaikan nyeri dada yang tidak kunjung hilang.",
+        "SEE A DOCTOR IMMEDIATELY if accompanied by severe shortness of breath, cold sweat, or pain radiating to the left arm.",
+        "Do not ignore chest pain that does not go away.",
       ],
     },
   },

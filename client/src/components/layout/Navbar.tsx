@@ -100,7 +100,7 @@ export default function Navbar() {
                                 display: "inline-block",
                             }}
                         >
-                            Masuk
+                            Sign In
                         </Link>
                         <Link
                             href="/signup"
@@ -117,7 +117,7 @@ export default function Navbar() {
                                 display: "inline-block",
                             }}
                         >
-                            Daftar
+                            Sign Up
                         </Link>
                     </>
                 )}
@@ -166,7 +166,7 @@ export default function Navbar() {
                                         {user?.fullName}
                                     </p>
                                     <p style={{ fontSize: "0.8rem", color: "#6B7280", margin: 0 }}>
-                                        {user?.role === "CLIENT" ? "Klien" : "Terapis"}
+                                        {user?.role === "CLIENT" ? "Client" : "Therapist"}
                                     </p>
                                 </div>
 
@@ -200,7 +200,7 @@ export default function Navbar() {
                                         fontWeight: 500,
                                     }}
                                 >
-                                    Logout
+                                    Sign Out
                                 </button>
                             </div>
                         )}

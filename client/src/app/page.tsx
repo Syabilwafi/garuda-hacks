@@ -58,9 +58,9 @@ export default function LandingPage() {
                 margin: "0 0 1.5rem 0"
               }}
             >
-              Pemetaan,<br />
-              booking, dan<br />
-              pijat aman dengan<br />
+              Screening,<br />
+              Appointments, and<br />
+              Safe Massages with<br />
               Press<span style={{color: "var(--color-martini)"}}>Point</span>
             </h1>
 
@@ -72,7 +72,7 @@ export default function LandingPage() {
               lineHeight: "1.6",
               maxWidth: "750px"
             }}>
-              PressPoint adalah platform pemetaan nyeri berbasis 3D interaktif yang menjembatani komunikasi antara pasien dan terapis profesional.
+              PressPoint is an interactive 3D pain mapping platform that bridges communication between patients and professional therapists.
             </p>
 
             <button
@@ -154,7 +154,7 @@ export default function LandingPage() {
                 </button>
 
                 <h2 style={{ fontFamily: "var(--font-primary)", fontSize: "1.5rem", fontWeight: 800, color: "#111827", marginBottom: "1.5rem" }}>
-                  Pilih Peran Anda
+                  Choose Your Role
                 </h2>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

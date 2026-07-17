@@ -15,37 +15,37 @@ interface PainTypeOption {
 const PAIN_TYPES: PainTypeOption[] = [
   {
     value: "DULL_ACHE",
-    label: "Nyeri Tumpul",
+    label: "Dull Pain",
     emoji: "🟡",
-    description: "Nyeri berat dan terus-menerus",
+    description: "Heavy and persistent pain",
     color: "#AFA406",
   },
   {
     value: "SHARP",
-    label: "Nyeri Tajam",
+    label: "Sharp Pain",
     emoji: "🔴",
-    description: "Nyeri menusuk atau memotong",
+    description: "Stabbing or cutting pain",
     color: "#DC2626",
   },
   {
     value: "BURNING",
-    label: "Nyeri Panas",
+    label: "Burning Pain",
     emoji: "🟠",
-    description: "Sensasi terbakar atau panas",
+    description: "Sensation of burning or heat",
     color: "#EA580C",
   },
   {
     value: "THROBBING",
-    label: "Nyeri Berdenyut",
+    label: "Throbbing Pain",
     emoji: "🟣",
-    description: "Nyeri berirama seperti denyut",
+    description: "Rhythmic pain like a pulse",
     color: "#7C3AED",
   },
   {
     value: "PRESSURE",
-    label: "Nyeri Tekanan",
+    label: "Pressure Pain",
     emoji: "🔵",
-    description: "Rasa tertekan atau sesak",
+    description: "Feeling of pressure or tightness",
     color: "#2563EB",
   },
 ];
@@ -70,7 +70,7 @@ export default function PainTypeSelector({
           letterSpacing: "0.05em",
         }}
       >
-        Pilih Jenis Nyeri
+        Select Pain Type
       </h3>
       <div
         style={{

@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { bookingApi } from "@/api/bookingApi";
 import ClinicalNoteModal from "@/components/ClinicalNoteModal";
 
-type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT";
+type TriageStatus = "GREEN" | "YELLOW" | "RED_URGENT" | "RED_EMERGENCY";
 
 interface Appointment {
     id: string;
@@ -29,31 +29,31 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
         id: "APT-001",
         patientName: "Jane Doe",
         medicalRecordId: "RM-2026-00412",
-        date: "24 Juli 2026",
-        time: "10:00 - 11:00 WIB",
+        date: "July 24, 2026",
+        time: "10:00 - 11:00",
         status: "Upcoming",
-        triageStatus: "MERAH_DARURAT",
-        notes: "Keluhan nyeri punggung bawah kronis sejak 3 minggu lalu. Mengalami mati rasa di sekitar genital dan paha dalam setelah insiden angkat beban berat.",
+        triageStatus: "RED_EMERGENCY",
+        notes: "Chronic lower back pain for the past 3 weeks. Experiencing numbness around genitals and inner thighs after heavy lifting incident.",
     },
     {
         id: "APT-003",
         patientName: "Ahmad Subarjo",
         medicalRecordId: "RM-2026-00891",
-        date: "24 Juli 2026",
-        time: "11:00 - 12:00 WIB",
+        date: "July 24, 2026",
+        time: "11:00 - 12:00",
         status: "Upcoming",
-        triageStatus: "KUNING",
-        notes: "Terapi pemulihan pasca stroke ringan. Menggunakan obat pengencer darah rutin.",
+        triageStatus: "YELLOW",
+        notes: "Recovery therapy after mild stroke. Taking blood thinners regularly.",
     },
     {
         id: "APT-002",
         patientName: "Budi Raharjo",
         medicalRecordId: "RM-2025-01244",
-        date: "12 Juni 2026",
-        time: "14:00 - 15:30 WIB",
+        date: "June 12, 2026",
+        time: "14:00 - 15:30",
         status: "Completed",
-        triageStatus: "HIJAU",
-        notes: "Sesi akupunktur ke-4. Progres ketegangan leher membaik.",
+        triageStatus: "GREEN",
+        notes: "4th acupuncture session. Neck tension improving.",
     },
 ];
 
@@ -134,28 +134,28 @@ export default function TherapistDashboard() {
     // Helper to extract styling properties for each specific screening classification badge
     const getTriageBadgeStyles = (status: TriageStatus) => {
         switch (status) {
-            case "MERAH_DARURAT":
+            case "RED_EMERGENCY":
                 return {
                     bg: "#FEF2F2",
                     text: "#991B1B",
                     border: "#FCA5A5",
                     label: "EMERGENCY"
                 };
-            case "MERAH_MENDESAK":
+            case "RED_URGENT":
                 return {
                     bg: "#FFF7ED",
                     text: "#C2410C",
                     border: "#FFEDD5",
-                    label: "RED"
+                    label: "URGENT"
                 };
-            case "KUNING":
+            case "YELLOW":
                 return {
                     bg: "var(--color-sunflower)",
                     text: "var(--color-martini-dark)",
                     border: "var(--color-martini)",
                     label: "YELLOW"
                 };
-            case "HIJAU":
+            case "GREEN":
             default:
                 return {
                     bg: "#F0FDF4",
@@ -174,11 +174,11 @@ export default function TherapistDashboard() {
                 <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
                     <div>
                         <h1 style={{ marginBottom: "0.5rem", fontSize: "clamp(1.5rem, 4vw, 1.875rem)" }}>Your Dashboard</h1>
-                        <p style={{ color: "var(--color-moss-60)", fontSize: "0.9rem" }}>Kelola jadwal konsultasi harian dan pantau tingkat urgensi triase skrining keselamatan pasien.</p>
+                        <p style={{ color: "var(--color-moss-60)", fontSize: "0.9rem" }}>Manage your daily consultation schedule and monitor patient safety screening triage urgency levels.</p>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
                         <span style={{ fontSize: "0.85rem", padding: "0.5rem 1rem", backgroundColor: "#F0FDF4", color: "#15803D", borderRadius: "var(--radius-sm)", fontWeight: 600, border: "1px solid #BBF7D0" }}>
-                            Aktif
+                            Active
                         </span>
                     </div>
                 </div>
@@ -202,8 +202,8 @@ export default function TherapistDashboard() {
                             <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--color-martini)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.75rem", fontWeight: "600", margin: "0 auto 1rem" }}>
                                 {user?.fullName?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'T'}
                             </div>
-                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>{user?.fullName || 'Terapis'}</h3>
-                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>{user?.specialization || 'Terapis Profesional'}</span>
+                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>{user?.fullName || 'Therapist'}</h3>
+                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>{user?.specialization || 'Professional Therapist'}</span>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -212,11 +212,11 @@ export default function TherapistDashboard() {
                                 <p style={{ fontSize: "0.9rem", color: "var(--color-moss)", fontWeight: "600" }}>{user?.email || '-'}</p>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Spesialisasi</label>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Specialization</label>
                                 <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.specialization || '-'}</p>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>ID Pengguna</label>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>User ID</label>
                                 <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.id || '-'}</p>
                             </div>
                         </div>
@@ -227,7 +227,7 @@ export default function TherapistDashboard() {
 
                         {/* Session Management */}
                         <div className="card">
-                            <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Jadwal Konsultasi Hari Ini</h2>
+                            <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Today's Consultation Schedule</h2>
 
                             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                                 {appointments.map((apt) => {
@@ -297,7 +297,7 @@ export default function TherapistDashboard() {
                         {/* Live Availability Management */}
                         <div className="card">
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                                <h2 style={{ fontSize: "1.25rem", margin: 0 }}>Atur Ketersediaan Jam Kerja</h2>
+                                <h2 style={{ fontSize: "1.25rem", margin: 0 }}>Set Work Hour Availability</h2>
                                 {isSavingAvailability && (
                                     <span style={{ fontSize: "0.75rem", color: "var(--color-martini)", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                         <span style={{
@@ -308,11 +308,11 @@ export default function TherapistDashboard() {
                                             backgroundColor: "var(--color-martini)",
                                             animation: "pulse 1.5s ease-in-out infinite"
                                         }} />
-                                        Menyimpan...
+                                        Saving...
                                     </span>
                                 )}
                             </div>
-                            <p style={{ color: "var(--color-moss-60)", fontSize: "0.8rem", marginBottom: "1.25rem" }}>Klik pada slot jam untuk mengubah status operasional Anda. Perubahan akan disimpan secara otomatis.</p>
+                            <p style={{ color: "var(--color-moss-60)", fontSize: "0.8rem", marginBottom: "1.25rem" }}>Click on time slots to change your operational status. Changes will be saved automatically.</p>
                             <style>{`
                                 @keyframes pulse {
                                     0%, 100% { opacity: 1; }
@@ -351,7 +351,7 @@ export default function TherapistDashboard() {
                                             marginTop: "4px",
                                             color: slot.isAvailable ? "#16A34A" : "#DC2626"
                                         }}>
-                                            {slot.isAvailable ? "● Dibuka" : "✕ Ditutup"}
+                                            {slot.isAvailable ? "● Open" : "✕ Closed"}
                                         </span>
                                     </button>
                                 ))}
@@ -362,7 +362,7 @@ export default function TherapistDashboard() {
 
                     {/* Right Column: Dynamic Patient Case Viewer & Triage Inspector */}
                     <div className="card" style={{ position: "sticky", top: "20px" }}>
-                        <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Detail Rekam Medis Sesi</h2>
+                        <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Medical Record Details</h2>
 
                         {selectedApt ? (
                             (() => {
@@ -372,15 +372,15 @@ export default function TherapistDashboard() {
                                 return (
                                     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                                         <div>
-                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Pasien</label>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Patient</label>
                                             <h3 style={{ fontSize: "1.2rem", margin: "0.15rem 0 0 0" }}>{selectedApt.patientName}</h3>
-                                            <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--color-moss-60)" }}>Nomor RM: {selectedApt.medicalRecordId}</p>
+                                            <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--color-moss-60)" }}>Record No: {selectedApt.medicalRecordId}</p>
                                         </div>
 
                                         {/* Dynamic Triage Emergency Level Component Block */}
                                         <div>
                                             <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase", display: "block", marginBottom: "0.35rem" }}>
-                                                Tingkat Darurat Skrining Mandiri
+                                                Self-Screening Emergency Level
                                             </label>
                                             <div style={{
                                                 padding: "0.85rem",
@@ -406,27 +406,27 @@ export default function TherapistDashboard() {
                                                     color: "#991B1B",
                                                     lineHeight: 1.4
                                                 }}>
-                                                    ⚠️ <strong>Warning:</strong> Pasien menjawab "YA" pada indikator Red Flag keselamatan. Evaluasi kontraindikasi manipulatf fisik secara mendalam sebelum memulai intervensi.
+                                                    ⚠️ <strong>Warning:</strong> Patient answered "YES" to safety Red Flag indicators. Thoroughly evaluate contraindications for physical manipulation before starting intervention.
                                                 </div>
                                             )}
                                         </div>
 
                                         <div>
-                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Waktu Sesi</label>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Session Time</label>
                                             <p style={{ margin: "0.15rem 0 0 0", fontSize: "0.9rem" }}>{selectedApt.date} ({selectedApt.time})</p>
                                         </div>
 
                                         <div>
-                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Catatan Awal Pasien & Gejala</label>
+                                            <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Patient Initial Notes & Symptoms</label>
                                             <div className="card-linen" style={{ padding: "0.75rem", fontSize: "0.85rem", marginTop: "0.25rem", fontStyle: "italic" }}>
-                                                "{selectedApt.notes || "Tidak ada catatan kustom."}"
+                                                "{selectedApt.notes || "No custom notes."}"
                                             </div>
                                         </div>
 
                                         {/* Clinical Note Viewer */}
                                         <div style={{ borderTop: "1px solid #E5E7EB", paddingTop: "1.25rem" }}>
                                             <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", display: "block", marginBottom: "0.5rem", textTransform: "uppercase" }}>
-                                                Catatan Klinis (SOAP)
+                                                Clinical Notes (SOAP)
                                             </label>
                                             <button
                                                 onClick={() => setIsClinicalNoteModalOpen(true)}
@@ -437,14 +437,14 @@ export default function TherapistDashboard() {
                                                     textAlign: "center"
                                                 }}
                                             >
-                                                📋 Lihat Catatan Klinis
+                                                📋 View Clinical Notes
                                             </button>
                                         </div>
 
                                         {/* Integration Link to Dashboard Pain Mapping */}
                                         <div style={{ paddingTop: "1rem" }}>
                                             <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", display: "block", marginBottom: "0.5rem", textTransform: "uppercase" }}>
-                                                Anatomi & Data Pemetaan Nyeri
+                                                Anatomy & Pain Mapping Data
                                             </label>
                                             <a
                                                 href="/painMapping"
@@ -477,7 +477,7 @@ export default function TherapistDashboard() {
                             })()
                         ) : (
                             <div style={{ textAlign: "center", padding: "4rem 1rem", color: "var(--color-moss-60)" }}>
-                                <p style={{ fontSize: "0.9rem" }}>Silakan pilih salah satu jadwal janji temu untuk memuat berkas rekam medis dan visualisasi tingkat kedaruratan assessment triase pasien.</p>
+                                <p style={{ fontSize: "0.9rem" }}>Select a consultation schedule to load medical records and visualize patient triage assessment urgency levels.</p>
                             </div>
                         )}
                     </div>

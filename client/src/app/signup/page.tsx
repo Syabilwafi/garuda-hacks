@@ -85,32 +85,32 @@ export default function SignupPage() {
 
   const validateClientForm = (): boolean => {
     if (!clientForm.fullName.trim()) {
-      setFormError("Nama lengkap wajib diisi");
+      setFormError("Full name is required");
       return false;
     }
     if (!clientForm.email.trim()) {
-      setFormError("Email wajib diisi");
+      setFormError("Email is required");
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(clientForm.email)) {
-      setFormError("Format email tidak valid");
+      setFormError("Invalid email format");
       return false;
     }
     if (!clientForm.password) {
-      setFormError("Password wajib diisi");
+      setFormError("Password is required");
       return false;
     }
     if (clientForm.password.length < 6) {
-      setFormError("Password minimal 6 karakter");
+      setFormError("Password must be at least 6 characters");
       return false;
     }
     if (!clientForm.confirmPassword) {
-      setFormError("Konfirmasi password wajib diisi");
+      setFormError("Password confirmation is required");
       return false;
     }
     if (clientForm.password !== clientForm.confirmPassword) {
-      setFormError("Password tidak cocok");
+      setFormError("Passwords do not match");
       return false;
     }
     return true;
@@ -118,40 +118,40 @@ export default function SignupPage() {
 
   const validateTherapistForm = (): boolean => {
     if (!therapistForm.fullName.trim()) {
-      setFormError("Nama lengkap wajib diisi");
+      setFormError("Full name is required");
       return false;
     }
     if (!therapistForm.email.trim()) {
-      setFormError("Email wajib diisi");
+      setFormError("Email is required");
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(therapistForm.email)) {
-      setFormError("Format email tidak valid");
+      setFormError("Invalid email format");
       return false;
     }
     if (!therapistForm.password) {
-      setFormError("Password wajib diisi");
+      setFormError("Password is required");
       return false;
     }
     if (therapistForm.password.length < 6) {
-      setFormError("Password minimal 6 karakter");
+      setFormError("Password must be at least 6 characters");
       return false;
     }
     if (!therapistForm.confirmPassword) {
-      setFormError("Konfirmasi password wajib diisi");
+      setFormError("Password confirmation is required");
       return false;
     }
     if (therapistForm.password !== therapistForm.confirmPassword) {
-      setFormError("Password tidak cocok");
+      setFormError("Passwords do not match");
       return false;
     }
     if (!therapistForm.specialization) {
-      setFormError("Spesialisasi wajib dipilih");
+      setFormError("Specialization is required");
       return false;
     }
     if (!therapistForm.licenseNumber.trim()) {
-      setFormError("Nomor lisensi wajib diisi");
+      setFormError("License number is required");
       return false;
     }
     return true;
@@ -195,7 +195,7 @@ export default function SignupPage() {
       );
       router.push("/dashboard/client");
     } catch (err) {
-      setFormError(error || "Pendaftaran gagal");
+      setFormError(error || "Registration failed");
     }
   };
 
@@ -221,7 +221,7 @@ export default function SignupPage() {
       );
       router.push("/dashboard/therapist");
     } catch (err) {
-      setFormError(error || "Pendaftaran gagal");
+      setFormError(error || "Registration failed");
     }
   };
 
@@ -236,7 +236,7 @@ export default function SignupPage() {
           backgroundColor: "var(--color-white)",
         }}
       >
-        <LoadingSpinner message="Memproses pendaftaran..." />
+        <LoadingSpinner message="Processing registration..." />
       </div>
     );
   }
@@ -252,7 +252,7 @@ export default function SignupPage() {
           backgroundColor: "#FDFCF8",
         }}
       >
-        <LoadingSpinner message="Memproses pendaftaran..." />
+        <LoadingSpinner message="Processing registration..." />
       </div>
     );
   }
@@ -333,10 +333,10 @@ export default function SignupPage() {
               </div>
           </Link>
           <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.5rem", color: "#111111" }}>
-            Daftar
+            Sign Up
           </h1>
           <p style={{ fontSize: "0.95rem", color: "#4B5563", margin: 0 }}>
-            Buat akun baru untuk memulai
+            Create a new account to get started
           </p>
         </div>
 
@@ -346,7 +346,7 @@ export default function SignupPage() {
             /* Role Selection */
             <div>
               <h2 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "2rem", color: "#111111" }}>
-                Pilih peran Anda
+                Choose your role
               </h2>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -372,10 +372,10 @@ export default function SignupPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", marginBottom: "0.5rem" }}>
-                    Daftar sebagai Pasien
+                    Sign up as Client
                   </h3>
                   <p style={{ fontSize: "0.9rem", color: "#4B5563", margin: 0 }}>
-                    Akses pemetaan nyeri 3D dan rekomendasi terapi
+                    Access 3D pain mapping and therapy recommendations
                   </p>
                 </button>
 
@@ -401,10 +401,10 @@ export default function SignupPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", marginBottom: "0.5rem" }}>
-                      Daftar sebagai Terapis
+                      Sign up as Therapist
                   </h3>
                   <p style={{ fontSize: "0.9rem", color: "#4B5563", margin: 0 }}>
-                    Kelola sesi terapi dan evaluasi teknik Anda
+                    Manage therapy sessions and evaluate your techniques
                   </p>
                 </button>
               </div>
@@ -430,19 +430,19 @@ export default function SignupPage() {
                   ←
                 </button>
                 <h2 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#111111", margin: 0 }}>
-                  Daftar sebagai Pasien
+                  Sign up as Client
                 </h2>
               </div>
 
               <form onSubmit={handleClientSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                 {/* Full Name */}
                 <div>
-                  <label style={labelStyle}>Nama Lengkap *</label>
+                  <label style={labelStyle}>Full Name *</label>
                   <input
                     type="text"
                     value={clientForm.fullName}
                     onChange={(e) => setClientForm({ ...clientForm, fullName: e.target.value })}
-                    placeholder="Masukkan nama lengkap"
+                    placeholder="Enter your full name"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -456,7 +456,7 @@ export default function SignupPage() {
                     type="email"
                     value={clientForm.email}
                     onChange={(e) => setClientForm({ ...clientForm, email: e.target.value })}
-                    placeholder="contoh@email.com"
+                    placeholder="example@email.com"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -465,12 +465,12 @@ export default function SignupPage() {
 
                 {/* Phone Number */}
                 <div>
-                  <label style={labelStyle}>Nomor Telepon</label>
+                  <label style={labelStyle}>Phone Number</label>
                   <input
                     type="tel"
                     value={clientForm.phoneNumber}
                     onChange={(e) => setClientForm({ ...clientForm, phoneNumber: e.target.value })}
-                    placeholder="08123456789"
+                    placeholder="1234567890"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -479,7 +479,7 @@ export default function SignupPage() {
 
                 {/* Date of Birth */}
                 <div>
-                  <label style={labelStyle}>Tanggal Lahir</label>
+                  <label style={labelStyle}>Date of Birth</label>
                   <input
                     type="date"
                     value={clientForm.dateOfBirth}
@@ -497,7 +497,7 @@ export default function SignupPage() {
                     type="password"
                     value={clientForm.password}
                     onChange={(e) => setClientForm({ ...clientForm, password: e.target.value })}
-                    placeholder="Minimal 6 karakter"
+                    placeholder="Minimum 6 characters"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -506,12 +506,12 @@ export default function SignupPage() {
 
                 {/* Confirm Password */}
                 <div>
-                  <label style={labelStyle}>Konfirmasi Password *</label>
+                  <label style={labelStyle}>Confirm Password *</label>
                   <input
                     type="password"
                     value={clientForm.confirmPassword}
                     onChange={(e) => setClientForm({ ...clientForm, confirmPassword: e.target.value })}
-                    placeholder="Ulangi password"
+                    placeholder="Repeat password"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -561,16 +561,16 @@ export default function SignupPage() {
                     }
                   }}
                 >
-                  {isLoading ? "Mendaftar..." : "Daftar"}
+                  {isLoading ? "Signing up..." : "Sign Up"}
                 </button>
               </form>
 
               {/* Login Link - Client */}
               <div style={{ marginTop: "2rem", textAlign: "center", paddingTop: "2rem", borderTop: "1px solid #E5E7EB" }}>
                 <p style={{ fontSize: "0.95rem", color: "#4B5563", margin: 0 }}>
-                  Sudah punya akun?{" "}
+                  Already have an account?{" "}
                   <Link href="/login" style={{ color: "var(--color-martini)", textDecoration: "none", fontWeight: 600 }}>
-                    Masuk sekarang
+                    Sign in now
                   </Link>
                 </p>
               </div>
@@ -596,19 +596,19 @@ export default function SignupPage() {
                   ←
                 </button>
                 <h2 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#111111", margin: 0 }}>
-                  Daftar sebagai Terapis
+                  Sign up as Therapist
                 </h2>
               </div>
 
               <form onSubmit={handleTherapistSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                 {/* Full Name */}
                 <div>
-                  <label style={labelStyle}>Nama Lengkap *</label>
+                  <label style={labelStyle}>Full Name *</label>
                   <input
                     type="text"
                     value={therapistForm.fullName}
                     onChange={(e) => setTherapistForm({ ...therapistForm, fullName: e.target.value })}
-                    placeholder="Masukkan nama lengkap"
+                    placeholder="Enter your full name"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -622,7 +622,7 @@ export default function SignupPage() {
                     type="email"
                     value={therapistForm.email}
                     onChange={(e) => setTherapistForm({ ...therapistForm, email: e.target.value })}
-                    placeholder="contoh@email.com"
+                    placeholder="example@email.com"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -631,12 +631,12 @@ export default function SignupPage() {
 
                 {/* Phone Number */}
                 <div>
-                  <label style={labelStyle}>Nomor Telepon</label>
+                  <label style={labelStyle}>Phone Number</label>
                   <input
                     type="tel"
                     value={therapistForm.phoneNumber}
                     onChange={(e) => setTherapistForm({ ...therapistForm, phoneNumber: e.target.value })}
-                    placeholder="08123456789"
+                    placeholder="1234567890"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -645,7 +645,7 @@ export default function SignupPage() {
 
                 {/* Specialization */}
                 <div>
-                  <label style={labelStyle}>Spesialisasi *</label>
+                  <label style={labelStyle}>Specialization *</label>
                   <select
                     value={therapistForm.specialization}
                     onChange={(e) => setTherapistForm({ ...therapistForm, specialization: e.target.value })}
@@ -656,24 +656,24 @@ export default function SignupPage() {
                       backgroundColor: "white",
                     }}
                   >
-                    <option value="">Pilih spesialisasi</option>
-                    <option value="Traditional Massage">Pijat Tradisional</option>
-                    <option value="Acupressure">Akupresur</option>
+                    <option value="">Choose specialization</option>
+                    <option value="Traditional Massage">Traditional Massage</option>
+                    <option value="Acupressure">Acupressure</option>
                     <option value="Reflexology">Reflexology</option>
-                    <option value="Chiropractic">Chiropractie</option>
-                    <option value="Physical Therapy">Fisioterapi</option>
-                    <option value="Other">Lainnya</option>
+                    <option value="Chiropractic">Chiropractic</option>
+                    <option value="Physical Therapy">Physical Therapy</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
                 {/* License Number */}
                 <div>
-                  <label style={labelStyle}>Nomor Lisensi *</label>
+                  <label style={labelStyle}>License Number *</label>
                   <input
                     type="text"
                     value={therapistForm.licenseNumber}
                     onChange={(e) => setTherapistForm({ ...therapistForm, licenseNumber: e.target.value })}
-                    placeholder="Masukkan nomor lisensi"
+                    placeholder="Enter your license number"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -682,12 +682,12 @@ export default function SignupPage() {
 
                 {/* Years of Experience */}
                 <div>
-                  <label style={labelStyle}>Pengalaman (tahun)</label>
+                  <label style={labelStyle}>Years of Experience</label>
                   <input
                     type="number"
                     value={therapistForm.yearsOfExperience}
                     onChange={(e) => setTherapistForm({ ...therapistForm, yearsOfExperience: e.target.value })}
-                    placeholder="Contoh: 5"
+                    placeholder="Example: 5"
                     min="0"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
@@ -702,7 +702,7 @@ export default function SignupPage() {
                     type="password"
                     value={therapistForm.password}
                     onChange={(e) => setTherapistForm({ ...therapistForm, password: e.target.value })}
-                    placeholder="Minimal 6 karakter"
+                    placeholder="Minimum 6 characters"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -711,12 +711,12 @@ export default function SignupPage() {
 
                 {/* Confirm Password */}
                 <div>
-                  <label style={labelStyle}>Konfirmasi Password *</label>
+                  <label style={labelStyle}>Confirm Password *</label>
                   <input
                     type="password"
                     value={therapistForm.confirmPassword}
                     onChange={(e) => setTherapistForm({ ...therapistForm, confirmPassword: e.target.value })}
-                    placeholder="Ulangi password"
+                    placeholder="Repeat password"
                     style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = "var(--color-martini)")}
                     onBlur={(e) => (e.target.style.borderColor = "#D1D5DB")}
@@ -766,16 +766,16 @@ export default function SignupPage() {
                     }
                   }}
                 >
-                  {isLoading ? "Mendaftar..." : "Daftar"}
+                  {isLoading ? "Signing up..." : "Sign Up"}
                 </button>
               </form>
 
               {/* Login Link - Therapist */}
               <div style={{ marginTop: "2rem", textAlign: "center", paddingTop: "2rem", borderTop: "1px solid #E5E7EB" }}>
                 <p style={{ fontSize: "0.95rem", color: "#4B5563", margin: 0 }}>
-                  Sudah punya akun?{" "}
+                  Already have an account?{" "}
                   <Link href="/login" style={{ color: "var(--color-martini)", textDecoration: "none", fontWeight: 600 }}>
-                    Masuk sekarang
+                    Sign in now
                   </Link>
                 </p>
               </div>

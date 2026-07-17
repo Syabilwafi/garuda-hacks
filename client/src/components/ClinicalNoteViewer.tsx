@@ -31,7 +31,7 @@ export default function ClinicalNoteViewer({
       } catch (err) {
         console.error("Error fetching clinical note:", err);
         setError(
-          "Catatan klinis belum tersedia. Pastikan assessment sudah disubmit."
+          "Clinical notes not available yet. Make sure the assessment has been submitted."
         );
       } finally {
         setLoading(false);
@@ -43,28 +43,28 @@ export default function ClinicalNoteViewer({
 
   const getTriageBadgeStyle = (status: string) => {
     switch (status) {
-      case "MERAH_DARURAT":
+      case "RED_EMERGENCY":
         return {
           bg: "#FEF2F2",
           text: "#991B1B",
           border: "#FCA5A5",
           label: "🔴 EMERGENCY",
         };
-      case "MERAH_MENDESAK":
+      case "RED_URGENT":
         return {
           bg: "#FFF7ED",
           text: "#C2410C",
           border: "#FFEDD5",
           label: "🔴 URGENT",
         };
-      case "KUNING":
+      case "YELLOW":
         return {
           bg: "#FFFAEB",
           text: "#92400E",
           border: "#FCD34D",
           label: "🟡 REVIEW",
         };
-      case "HIJAU":
+      case "GREEN":
       default:
         return {
           bg: "#F0FDF4",

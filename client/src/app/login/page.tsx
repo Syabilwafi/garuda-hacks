@@ -30,23 +30,23 @@ export default function LoginPage() {
     e.preventDefault();
 
     if (!selectedRole) {
-      setFormError("Pilih peran terlebih dahulu");
+      setFormError("Please select a role first");
       return;
     }
 
     if (!email.trim()) {
-      setFormError("Email wajib diisi");
+      setFormError("Email is required");
       return;
     }
 
     if (!password) {
-      setFormError("Password wajib diisi");
+      setFormError("Password is required");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setFormError("Format email tidak valid");
+      setFormError("Invalid email format");
       return;
     }
 
@@ -54,7 +54,7 @@ export default function LoginPage() {
       await login(email, password, selectedRole);
       router.push(selectedRole === "CLIENT" ? "/dashboard/client" : "/dashboard/therapist");
     } catch (err) {
-      setFormError(error || "Login gagal");
+      setFormError(error || "Login failed");
     }
   };
 
@@ -71,7 +71,7 @@ export default function LoginPage() {
           backgroundColor: "#FDFCF8",
         }}
       >
-        <LoadingSpinner message="Memuat..." />
+        <LoadingSpinner message="Loading..." />
       </div>
     );
   }
@@ -152,10 +152,10 @@ export default function LoginPage() {
               </div>
           </Link>
           <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.5rem", color: "#111111" }}>
-            Masuk
+            Sign In
           </h1>
           <p style={{ fontSize: "0.95rem", color: "#4B5563", margin: 0 }}>
-            Lanjutkan ke dashboard Anda
+            Continue to your dashboard
           </p>
         </div>
 
@@ -165,7 +165,7 @@ export default function LoginPage() {
           {!selectedRole ? (
             <div>
               <h2 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "2rem", color: "#111111" }}>
-                Pilih peran Anda
+                Choose your role
               </h2>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -191,10 +191,10 @@ export default function LoginPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", marginBottom: "0.5rem" }}>
-                    Masuk sebagai Pasien
+                    Sign in as Client
                   </h3>
                   <p style={{ fontSize: "0.9rem", color: "#4B5563", margin: 0 }}>
-                    Akses pemetaan nyeri 3D dan rekomendasi terapi
+                    Access 3D pain mapping and therapy recommendations
                   </p>
                 </button>
 
@@ -220,10 +220,10 @@ export default function LoginPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", marginBottom: "0.5rem" }}>
-                    Masuk sebagai Terapis
+                    Sign in as Therapist
                   </h3>
                   <p style={{ fontSize: "0.9rem", color: "#4B5563", margin: 0 }}>
-                    Kelola sesi terapi dan evaluasi teknik Anda
+                    Manage therapy sessions and evaluate your techniques
                   </p>
                 </button>
               </div>
@@ -250,7 +250,7 @@ export default function LoginPage() {
                   ←
                 </button>
                 <h2 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#111111", margin: 0 }}>
-                  {selectedRole === "CLIENT" ? "Masuk sebagai Pasien" : "Masuk sebagai Terapis"}
+                  {selectedRole === "CLIENT" ? "Sign in as Client" : "Sign in as Therapist"}
                 </h2>
               </div>
 
@@ -272,7 +272,7 @@ export default function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="contoh@email.com"
+                    placeholder="example@email.com"
                     style={{
                       width: "100%",
                       padding: "0.875rem 1rem",
@@ -380,10 +380,10 @@ export default function LoginPage() {
                           animation: "spin 0.8s linear infinite",
                         }}
                       />
-                      Memproses...
+                      Processing...
                     </>
                   ) : (
-                    "Masuk"
+                    "Sign In"
                   )}
                 </button>
               </form>
@@ -391,7 +391,7 @@ export default function LoginPage() {
               {/* Signup Link */}
               <div style={{ marginTop: "2rem", textAlign: "center", paddingTop: "2rem", borderTop: "1px solid #E5E7EB" }}>
                 <p style={{ fontSize: "0.95rem", color: "#4B5563", margin: 0 }}>
-                  Belum punya akun?{" "}
+                  Don't have an account?{" "}
                   <Link
                     href={`/signup?role=${selectedRole?.toLowerCase()}`}
                     style={{
@@ -400,7 +400,7 @@ export default function LoginPage() {
                       fontWeight: 600,
                     }}
                   >
-                    Daftar sekarang
+                    Sign up now
                   </Link>
                 </p>
               </div>

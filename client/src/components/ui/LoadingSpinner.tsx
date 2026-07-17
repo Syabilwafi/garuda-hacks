@@ -6,7 +6,7 @@ interface LoadingSpinnerProps {
 }
 
 export default function LoadingSpinner({
-                                           message = "Memproses...",
+                                           message = "Processing...",
                                            subMessage,
                                        }: LoadingSpinnerProps) {
     return (

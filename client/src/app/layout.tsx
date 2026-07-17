@@ -5,23 +5,23 @@ import Disclaimer from "@/components/layout/Disclaimer";
 import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
-  title: "PressPoint — Pemetaan Nyeri 3D Interaktif",
+  title: "PressPoint — Interactive 3D Pain Mapping",
   description:
-    "PressPoint adalah platform pemetaan nyeri berbasis 3D yang menjembatani komunikasi antara pasien, terapis tradisional, dan tenaga medis. Dapatkan assessment medis terstruktur dan panduan titik pijat yang aman.",
+    "PressPoint is a 3D-based pain mapping platform that bridges communication between patients, traditional therapists, and medical professionals. Get structured medical assessment and safe massage point guidance.",
   keywords: [
-    "pemetaan nyeri",
     "pain mapping",
-    "titik pijat",
-    "terapi tradisional",
-    "akupresur",
-    "kesehatan indonesia",
-    "model 3D",
+    "3D visualization",
+    "massage points",
+    "traditional therapy",
+    "acupressure",
+    "health wellness",
+    "3D model",
   ],
   authors: [{ name: "PressPoint Team" }],
   openGraph: {
-    title: "PressPoint — Pemetaan Nyeri 3D Interaktif",
+    title: "PressPoint — Interactive 3D Pain Mapping",
     description:
-      "Jembatan komunikasi antara pasien, terapis tradisional, dan tenaga medis melalui visualisasi nyeri 3D berbasis AI.",
+      "Bridge communication between patients, traditional therapists, and medical professionals through AI-powered 3D pain visualization.",
     type: "website",
   },
 };
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
+    <html lang="en">
       <body>
         <AuthProvider>
           <Navbar />

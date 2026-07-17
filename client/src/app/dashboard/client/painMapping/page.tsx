@@ -24,41 +24,41 @@ const HumanModel = dynamic(() => import("@/components/3d/HumanModel"), {
                 borderRadius: "var(--radius-md)",
             }}
         >
-            <LoadingSpinner message="Memuat model 3D..." />
+            <LoadingSpinner message="Loading 3D model..." />
         </div>
     ),
 });
 
 const TAHAP_1_EMERGENCY = [
-    { id: "t1_1", label: "Apakah Anda mengalami nyeri dada atau sesak napas?" },
-    { id: "t1_2", label: "Apakah Anda tiba-tiba kehilangan kekuatan pada tangan atau kaki?" },
-    { id: "t1_3", label: "Apakah Anda kehilangan kontrol buang air kecil atau besar?" },
-    { id: "t1_4", label: "Apakah Anda mengalami mati rasa di sekitar genital, bokong, atau paha dalam?" },
-    { id: "t1_5", label: "Apakah nyeri muncul setelah kecelakaan atau benturan berat?" },
-    { id: "t1_6", label: "Apakah salah satu kaki tiba-tiba bengkak, merah, hangat, dan nyeri?" },
+    { id: "t1_1", label: "Do you experience chest pain or shortness of breath?" },
+    { id: "t1_2", label: "Have you suddenly lost strength in your hands or feet?" },
+    { id: "t1_3", label: "Have you lost control of bowel or bladder function?" },
+    { id: "t1_4", label: "Do you experience numbness around the genitals, buttocks, or inner thighs?" },
+    { id: "t1_5", label: "Did the pain appear after an accident or serious impact?" },
+    { id: "t1_6", label: "Is one leg suddenly swollen, red, warm, and painful?" },
 ];
 
 const TAHAP_2_URGENT = [
-    { id: "t2_1", label: "Apakah Anda demam atau menggigil?" },
-    { id: "t2_2", label: "Apakah area nyeri merah, panas, atau membengkak?" },
-    { id: "t2_3", label: "Apakah terdapat luka terbuka atau infeksi?" },
-    { id: "t2_4", label: "Apakah berat badan turun tanpa direncanakan?" },
-    { id: "t2_5", label: "Apakah Anda memiliki riwayat kanker dan sekarang mengalami nyeri baru?" },
-    { id: "t2_6", label: "Apakah nyeri terus memburuk atau membangunkan Anda setiap malam?" },
-    { id: "t2_7", label: "Apakah Anda tidak dapat berjalan atau menggunakan bagian tubuh tersebut?" },
+    { id: "t2_1", label: "Do you have fever or chills?" },
+    { id: "t2_2", label: "Is the area red, hot, or swollen?" },
+    { id: "t2_3", label: "Is there an open wound or infection?" },
+    { id: "t2_4", label: "Have you lost weight without planning to?" },
+    { id: "t2_5", label: "Do you have a history of cancer and now experience new pain?" },
+    { id: "t2_6", label: "Is the pain getting worse or waking you up every night?" },
+    { id: "t2_7", label: "Are you unable to walk or use that body part?" },
 ];
 
 const TAHAP_3_YELLOW = [
-    { id: "t3_1", label: "Apakah Anda sedang hamil?" },
-    { id: "t3_2", label: "Apakah Anda memiliki osteoporosis?" },
-    { id: "t3_3", label: "Apakah Anda menggunakan pengencer darah?" },
-    { id: "t3_4", label: "Apakah Anda baru menjalani operasi?" },
-    { id: "t3_5", label: "Apakah Anda mengalami kesemutan atau mati rasa ringan?" },
-    { id: "t3_6", label: "Apakah Anda memiliki diabetes atau gangguan sensasi?" },
-    { id: "t3_7", label: "Apakah Anda memiliki implan pada area keluhan?" },
+    { id: "t3_1", label: "Are you pregnant?" },
+    { id: "t3_2", label: "Do you have osteoporosis?" },
+    { id: "t3_3", label: "Are you taking blood thinners?" },
+    { id: "t3_4", label: "Have you recently had surgery?" },
+    { id: "t3_5", label: "Do you experience tingling or mild numbness?" },
+    { id: "t3_6", label: "Do you have diabetes or sensory disorder?" },
+    { id: "t3_7", label: "Do you have an implant in the affected area?" },
 ];
 
-type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT" | null;
+type TriageStatus = "GREEN" | "YELLOW" | "RED_URGENT" | "RED_EMERGENCY" | null;
 
 export default function PainMappingPage() {
     const router = useRouter();
@@ -90,11 +90,11 @@ export default function PainMappingPage() {
         const updatedAnswers = { ...triageAnswers, [questionId]: answer };
         setTriageAnswers(updatedAnswers);
 
-        if (answer === "ya") {
+        if (answer === "yes") {
             if (stageType === 1) {
-                setHardStopStatus("MERAH_DARURAT");
-            } else if (stageType === 2 && hardStopStatus !== "MERAH_DARURAT") {
-                setHardStopStatus("MERAH_MENDESAK");
+                setHardStopStatus("RED_EMERGENCY");
+            } else if (stageType === 2 && hardStopStatus !== "RED_EMERGENCY") {
+                setHardStopStatus("RED_URGENT");
             }
         }
 
@@ -103,7 +103,7 @@ export default function PainMappingPage() {
 
     const handleNextStep = () => {
         if (currentStep === 0 && !healthDescription.trim()) {
-            alert("Silakan isi deskripsi keluhan kesehatan Anda terlebih dahulu.");
+            alert("Please fill in your health complaint description first.");
             return;
         }
         setCurrentStep((prev) => prev + 1);
@@ -116,18 +116,18 @@ export default function PainMappingPage() {
     };
 
     const getFinalTriageStatus = (): TriageStatus => {
-        if (hardStopStatus === "MERAH_DARURAT" || hardStopStatus === "MERAH_MENDESAK") {
+        if (hardStopStatus === "RED_EMERGENCY" || hardStopStatus === "RED_URGENT") {
             return hardStopStatus;
         }
 
-        const hasStage3Yes = TAHAP_3_YELLOW.some((q) => triageAnswers[q.id] === "ya");
+        const hasStage3Yes = TAHAP_3_YELLOW.some((q) => triageAnswers[q.id] === "yes");
         const isPainSevere = selectedIntensity >= 7;
 
         if (hasStage3Yes || isPainSevere) {
-            return "KUNING";
+            return "YELLOW";
         }
 
-        return "HIJAU";
+        return "GREEN";
     };
 
     const handleSubmitForm = async (e: React.FormEvent) => {
@@ -154,9 +154,9 @@ export default function PainMappingPage() {
             await generateClinicalNote({
                 appointmentId: bookingId,
                 patientId: user?.id || '',
-                patientName: user?.fullName || 'Pasien',
+                patientName: user?.fullName || 'Patient',
                 painPoints: paintedPoints.map((p) => ({
-                    location: p.anatomicalArea || 'Area Tubuh',
+                    location: p.anatomicalArea || 'Body Area',
                     painType: p.painType,
                     intensity: p.intensity || 5
                 })),
@@ -179,7 +179,7 @@ export default function PainMappingPage() {
 
         } catch (error) {
             console.error("Error submitting assessment:", error);
-            alert("Terjadi kesalahan saat mengirim assessment. Silakan coba lagi.");
+            alert("An error occurred while sending the assessment. Please try again.");
             router.push("/dashboard/client");
         } finally {
             setIsSubmitting(false);
@@ -243,7 +243,7 @@ export default function PainMappingPage() {
                             fontSize: "clamp(1.5rem, 4vw, 1.875rem)"
                         }}
                     >
-                        Pemetaan Nyeri 3D & Skrining Keselamatan
+                        3D Pain Mapping & Safety Screening
                     </h1>
                     <p
                         style={{
@@ -252,7 +252,7 @@ export default function PainMappingPage() {
                             maxWidth: "520px",
                         }}
                     >
-                        Klik atau sentuh area tubuh pada model 3D untuk menandai lokasi nyeri Anda, kemudian selesaikan skrining mandiri di panel kanan.
+                        Click or touch body areas on the 3D model to mark your pain locations, then complete the self-screening in the right panel.
                     </p>
                 </div>
             </div>
@@ -307,10 +307,10 @@ export default function PainMappingPage() {
                                 alignItems: "center",
                                 gap: "0.5rem"
                             }}>
-                                Level Nyeri
+                                Pain Level
                             </h3>
                             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                                <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--color-moss-60)" }}>Ringan</span>
+                                <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--color-moss-60)" }}>Mild</span>
                                 <input
                                     type="range"
                                     min="1"
@@ -327,7 +327,7 @@ export default function PainMappingPage() {
                                         cursor: "pointer"
                                     }}
                                 />
-                                <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--color-moss-60)" }}>Berat</span>
+                                <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--color-moss-60)" }}>Severe</span>
                             </div>
                             <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.9rem", fontWeight: 700, color: "var(--color-moss)" }}>
                                 Level: {selectedIntensity} / 10
@@ -350,7 +350,7 @@ export default function PainMappingPage() {
                                         marginBottom: "0.625rem",
                                     }}
                                 >
-                                    Titik Ditandai ({paintedPoints.length})
+                                    Marked Points ({paintedPoints.length})
                                 </p>
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
                                     {Object.entries(painTypeCount).map(([type, count]) => (
@@ -387,7 +387,7 @@ export default function PainMappingPage() {
                                         transition: "var(--transition-base)",
                                     }}
                                 >
-                                    Hapus Semua Tanda
+                                    Clear All Marks
                                 </button>
                             </div>
                         )}
@@ -423,7 +423,7 @@ export default function PainMappingPage() {
                                     color: "var(--color-moss-60)",
                                 }}
                             >
-                                Pilih jenis nyeri lalu klik area tubuh pada model 3D untuk mulai
+                                Select pain type then click body area on the 3D model to start
                             </p>
                         )}
                     </div>
@@ -446,7 +446,7 @@ export default function PainMappingPage() {
                             <div style={{ marginBottom: "1.5rem" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
                                     <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-moss-80)" }}>
-                                        Skrining Mandiri
+                                        Self-Screening
                                     </span>
                                     <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-martini)" }}>
                                         {progressPercentage}%
@@ -464,15 +464,15 @@ export default function PainMappingPage() {
                                 {currentStep === 0 && (
                                     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                                         <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--color-moss)" }}>
-                                            Tuliskan Deskripsi Keluhan Kesehatan Anda
+                                            Describe Your Pain Right Now
                                         </h3>
                                         <p style={{ fontSize: "0.8rem", color: "var(--color-moss-60)", lineHeight: 1.4 }}>
-                                            Mohon berikan rincian mengenai gejala atau masalah kesehatan utama yang Anda rasakan secara detail.
+                                            Please provide detailed information regarding the symptoms or primary health issues you are experiencing.
                                         </p>
                                         <textarea
                                             required
                                             className="input"
-                                            placeholder="Contoh: Nyeri menjalar dari pinggang bawah ke bokong kanan sejak 3 hari lalu..."
+                                            placeholder="Example: Pain radiating from lower back to right buttocks for the past 3 days..."
                                             rows={5}
                                             value={healthDescription}
                                             onChange={(e) => setHealthDescription(e.target.value)}
@@ -541,7 +541,7 @@ export default function PainMappingPage() {
                                             </svg>
                                         </div>
 
-                                        <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--color-moss)" }}>Skrining Selesai</h3>
+                                        <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--color-moss)" }}>Screening Complete</h3>
 
                                         {/* Triage Feedback - Reassured and Non-Threatening */}
                                         {finalStatus === "MERAH_DARURAT" && (
@@ -589,12 +589,12 @@ export default function PainMappingPage() {
                                                     Mengirim...
                                                 </>
                                             ) : (
-                                                <>Kirim Assessment</>
+                                                <>Send Assessment</>
                                             )}
                                         </button>
                                         {paintedPoints.length === 0 && (
                                             <p style={{ fontSize: "0.75rem", color: "red", marginTop: "-0.25rem" }}>
-                                                * Harap tandai setidaknya satu titik nyeri pada model 3D sebelum mengirim.
+                                                * Please mark at least one pain point on the 3D model before submitting..
                                             </p>
                                         )}
                                     </div>
@@ -618,7 +618,7 @@ export default function PainMappingPage() {
                                             fontWeight: 600
                                         }}
                                     >
-                                        ← Kembali
+                                        ← Back
                                     </button>
 
                                     {currentStep === 0 && (
@@ -634,7 +634,7 @@ export default function PainMappingPage() {
                                                 fontWeight: 700
                                             }}
                                         >
-                                            Lanjut →
+                                            Next →
                                         </button>
                                     )}
                                 </div>

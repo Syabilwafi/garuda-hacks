@@ -264,7 +264,7 @@ export default function ClientDashboard() {
             router.push("/dashboard/client/painMapping");
         } catch (error) {
             console.error('Error creating appointment:', error);
-            alert('Gagal membuat janji temu. Silakan coba lagi.');
+            alert('Failed to create appointment. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -277,15 +277,15 @@ export default function ClientDashboard() {
             <div style={{ backgroundColor: "var(--color-white)", borderBottom: "1px solid #E5E7EB", padding: "2.5rem 1.5rem" }}>
                 <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
                     <div>
-                        <h1 style={{ marginBottom: "0.5rem", fontSize: "clamp(1.5rem, 4vw, 1.875rem)" }}>Dashboard Pasien</h1>
-                        <p style={{ color: "var(--color-moss-60)", fontSize: "0.9rem" }}>Kelola profil medis Anda dan atur jadwal janji temu dengan praktisi profesional.</p>
+                        <h1 style={{ marginBottom: "0.5rem", fontSize: "clamp(1.5rem, 4vw, 1.875rem)" }}>Client Dashboard</h1>
+                        <p style={{ color: "var(--color-moss-60)", fontSize: "0.9rem" }}>Manage your medical profile and schedule appointments with professional practitioners.</p>
                     </div>
                     <button onClick={() => setIsModalOpen(true)} className="btn-primary" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
-                        Buat Janji Temu
+                        Create Appointment
                     </button>
                 </div>
             </div>
@@ -308,8 +308,8 @@ export default function ClientDashboard() {
                             <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "var(--color-martini)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.75rem", fontWeight: "600", margin: "0 auto 1rem" }}>
                                 {user?.fullName?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'}
                             </div>
-                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>{user?.fullName || 'Pengguna'}</h3>
-                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>Pasien</span>
+                            <h3 style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.25rem" }}>{user?.fullName || 'User'}</h3>
+                            <span style={{ fontSize: "0.8rem", padding: "0.2rem 0.6rem", backgroundColor: "var(--color-sunflower)", color: "var(--color-martini)", borderRadius: "999px", fontWeight: 600 }}>Client</span>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -318,11 +318,11 @@ export default function ClientDashboard() {
                                 <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.email || '-'}</p>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Nomor Telepon</label>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>Phone Number</label>
                                 <p style={{ fontSize: "0.9rem", color: "var(--color-moss)" }}>{user?.phoneNumber || '-'}</p>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>ID Pengguna</label>
+                                <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-moss-60)", textTransform: "uppercase" }}>User ID</label>
                                 <p style={{ fontSize: "0.9rem", color: "var(--color-moss)", fontWeight: "600" }}>{user?.id || '-'}</p>
                             </div>
                         </div>
@@ -331,11 +331,11 @@ export default function ClientDashboard() {
                     {/* Right Column: Appointment History List */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                         <div className="card">
-                            <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Riwayat Janji Temu</h2>
+                            <h2 style={{ fontSize: "1.25rem", marginBottom: "1.25rem", borderBottom: "1px solid #E5E7EB", paddingBottom: "0.75rem" }}>Appointment History</h2>
 
                             {appointments.length === 0 ? (
                                 <div className="card-linen" style={{ textAlign: "center", padding: "3rem" }}>
-                                    <p style={{ color: "var(--color-moss-60)", fontSize: "0.95rem" }}>Belum ada jadwal janji temu aktif.</p>
+                                    <p style={{ color: "var(--color-moss-60)", fontSize: "0.95rem" }}>No active appointments scheduled.</p>
                                 </div>
                             ) : (
                                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -347,8 +347,8 @@ export default function ClientDashboard() {
                                                     <span style={{ fontSize: "0.75rem", color: "var(--color-moss-60)" }}>• {apt.role}</span>
                                                 </div>
                                                 <p style={{ fontSize: "0.85rem", color: "var(--color-moss-80)", display: "flex", gap: "2rem", margin: 0 }}>
-                                                    <span><span style={{fontWeight: 700}}>Date: </span>{apt.date}</span>
-                                                    <span><span style={{fontWeight: 700}}>Time: </span>{apt.time}</span>
+                                                    <span><span style={{fontWeight: 700}}>Date:</span> {apt.date}</span>
+                                                    <span><span style={{fontWeight: 700}}>Time:</span> {apt.time}</span>
                                                 </p>
                                             </div>
                                             <div>
@@ -381,7 +381,7 @@ export default function ClientDashboard() {
                         {/* Close Modal Button */}
                         <button onClick={() => { setIsModalOpen(false); setSelectedProf(null); setSearchTerm(""); }} style={{ position: "absolute", top: "1rem", right: "1rem", background: "transparent", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--color-moss-60)" }}>&times;</button>
 
-                        <h2 style={{ fontSize: "1.35rem", marginBottom: "1rem" }}>Cari & Pilih Profesional</h2>
+                        <h2 style={{ fontSize: "1.35rem", marginBottom: "1rem" }}>Search & Select Professional</h2>
 
                         {!selectedProf ? (
                             <>
@@ -401,7 +401,7 @@ export default function ClientDashboard() {
                                             animation: "spin 1s linear infinite",
                                             marginBottom: "1rem"
                                         }} />
-                                        <p style={{ fontSize: "0.9rem", margin: "0.5rem 0 0 0" }}>Memuat daftar terapis...</p>
+                                        <p style={{ fontSize: "0.9rem", margin: "0.5rem 0 0 0" }}>Loading therapist list...</p>
                                         <style>{`
                                             @keyframes spin {
                                                 0% { transform: rotate(0deg); }
@@ -412,7 +412,7 @@ export default function ClientDashboard() {
                                 ) : (
                                     <>
                                         <div style={{ marginBottom: "1.25rem" }}>
-                                            <input type="text" className="input" placeholder="Cari berdasarkan nama ahli atau spesialisasi..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} disabled={isFetchingTherapists} />
+                                            <input type="text" className="input" placeholder="Search by specialist name or specialization..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} disabled={isFetchingTherapists} />
                                         </div>
 
                                         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -429,7 +429,7 @@ export default function ClientDashboard() {
                                                 </div>
                                             ))}
                                             {filteredProfessionals.length === 0 && !isFetchingTherapists && (
-                                                <p style={{ fontSize: "0.85rem", color: "var(--color-moss-60)", textAlign: "center" }}>Profesional tidak ditemukan.</p>
+                                                <p style={{ fontSize: "0.85rem", color: "var(--color-moss-60)", textAlign: "center" }}>No professionals found.</p>
                                             )}
                                         </div>
                                     </>
@@ -439,14 +439,14 @@ export default function ClientDashboard() {
                             /* Final Configuration Form Step */
                             <form onSubmit={handleCreateAppointment} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                                 <div className="card-linen" style={{ padding: "1rem" }}>
-                                    <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-moss-60)" }}>Profesional Terpilih:</p>
+                                    <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-moss-60)" }}>Selected Professional:</p>
                                     <h4 style={{ margin: "0.15rem 0", fontSize: "1rem" }}>{selectedProf.name}</h4>
                                     <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-martini)" }}>{selectedProf.specialty}</p>
                                 </div>
 
                                 <div>
                                     <label style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.5rem" }}>
-                                        Tanggal Janji Temu
+                                        Appointment Date
                                     </label>
                                     <input
                                         type="date"
@@ -466,7 +466,7 @@ export default function ClientDashboard() {
 
                                 <div>
                                     <label style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.75rem" }}>
-                                        Pilih Jam Operasional yang Tersedia
+                                        Select Available Time Slot
                                     </label>
 
                                     {!bookingDate ? (
@@ -479,7 +479,7 @@ export default function ClientDashboard() {
                                             color: "var(--color-moss-60)",
                                             fontSize: "0.85rem"
                                         }}>
-                                            Silakan pilih tanggal terlebih dahulu untuk melihat jadwal yang tersedia.
+                                            Please select a date first to view available schedules.
                                         </div>
                                     ) : (
                                         <div style={{
@@ -529,7 +529,7 @@ export default function ClientDashboard() {
                                                     >
                                                         {slot.time.replace(" WIB", "")}
                                                         <span style={{ display: "block", fontSize: "0.65rem", marginTop: "2px", opacity: 0.8 }}>
-                                                            {slot.isAvailable ? "Tersedia" : "Penuh"}
+                                                            {slot.isAvailable ? "Available" : "Full"}
                                                         </span>
                                                     </button>
                                                 );
@@ -550,7 +550,7 @@ export default function ClientDashboard() {
                                         color: "#991B1B",
                                         lineHeight: 1.4
                                     }}>
-                                        ⚠️ Mode Demo: Koneksi backend tidak tersedia, menggunakan data simulasi.
+                                        ⚠️ Demo Mode: Backend connection unavailable, using simulated data.
                                     </div>
                                 )}
 
@@ -562,7 +562,7 @@ export default function ClientDashboard() {
                                         onClick={() => { setSelectedProf(null); setBookingTime(""); }}
                                         disabled={isLoading}
                                     >
-                                        Kembali
+                                        Back
                                     </button>
                                     <button
                                         type="submit"

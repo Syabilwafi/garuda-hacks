@@ -51,7 +51,7 @@ export default function Disclaimer() {
               letterSpacing: "0.06em",
             }}
           >
-            Disclaimer Kesehatan
+            Health Disclaimer
           </h3>
         </div>
         <ul
@@ -63,10 +63,10 @@ export default function Disclaimer() {
           }}
         >
           {[
-            "PressPoint adalah alat bantu komunikasi dan evaluasi, bukan pengganti diagnosis medis profesional.",
-            "Rekomendasi titik pijat bersifat peredaan nyeri sementara, bukan pengobatan definitif.",
-            "Evaluasi teknik terapi berbasis AI bersifat pendukung penilaian, bukan sertifikasi resmi kompetensi terapis.",
-            "Pengguna disarankan tetap berkonsultasi ke tenaga medis untuk kondisi yang tidak membaik atau memburuk.",
+            "PressPoint is a communication and evaluation tool, not a substitute for professional medical diagnosis.",
+            "Massage point recommendations provide temporary pain relief, not definitive treatment.",
+            "AI-based therapy technique evaluation supports assessment, not official therapist competency certification.",
+            "Users are advised to consult healthcare professionals if conditions do not improve or worsen.",
           ].map((item, i) => (
             <li
               key={i}
@@ -122,7 +122,7 @@ export default function Disclaimer() {
               fontWeight: 500,
             }}
           >
-            Dibangun untuk kesehatan masyarakat Indonesia
+            Built for public health
           </span>
         </div>
       </div>

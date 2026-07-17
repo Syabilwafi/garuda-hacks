@@ -43,23 +43,23 @@ export const getTriageMessage = (
 ): { title: string; content: string } => {
   const messages: Record<TriageStatus, { title: string; content: string }> = {
     [TRIAGE_STATUS.RED_EMERGENCY]: {
-      title: "Catatan Kesehatan Penting",
+      title: "Important Health Alert",
       content:
-        "Demi kenyamanan dan keselamatan Anda, beberapa keluhan yang terdeteksi membutuhkan pemeriksaan medis terlebih dahulu. Kami sangat menyarankan Anda berkonsultasi dengan dokter atau unit kesehatan terdekat sebelum menjadwalkan sesi terapi fisik atau pijat.",
+        "For your comfort and safety, some detected symptoms require medical examination first. We strongly recommend consulting a doctor or your nearest healthcare facility before scheduling physical therapy or massage sessions.",
     },
     [TRIAGE_STATUS.RED_URGENT]: {
-      title: "Saran Kami",
+      title: "Our Recommendation",
       content:
-        "Keluhan yang Anda rasakan sebaiknya dievaluasi secara langsung oleh dokter terlebih dahulu agar terapi pendukung ke depan dapat dirancang dengan aman dan optimal untuk Anda.",
+        "Your symptoms should be evaluated directly by a doctor first so that future supportive therapy can be designed safely and optimally for you.",
     },
     [TRIAGE_STATUS.YELLOW]: {
-      title: "Informasi",
+      title: "Information",
       content:
-        "Tim kami akan meninjau catatan kesehatan Anda untuk menyesuaikan metode terapi yang paling aman dan nyaman sesuai dengan kondisi fisik Anda saat ini.",
+        "Our team will review your health records to adjust the safest and most comfortable therapy method according to your current physical condition.",
     },
     [TRIAGE_STATUS.GREEN]: {
-      title: "Status Screening",
-      content: "Semua data skrining mandiri telah lengkap. Hasil pemetaan siap dikirimkan kepada tim kami untuk persiapan sesi Anda.",
+      title: "Screening Status",
+      content: "All self-screening data is complete. Mapping results are ready to be sent to our team for your session preparation.",
     },
   };
 

@@ -68,7 +68,7 @@ export default function ClinicalNoteModal({
         >
           <div>
             <h2 style={{ margin: "0 0 0.25rem 0", fontSize: "1.3rem" }}>
-              Catatan Klinis Pasien
+              Patient Clinical Notes
             </h2>
             <p
               style={{

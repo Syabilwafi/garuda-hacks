@@ -39,12 +39,12 @@ export interface TherapistSignupPayload {
 }
 
 const MOCK_CLIENT_LOGIN: AuthResponse = {
-  message: "Login berhasil",
+  message: "Login successful",
   token: "mock_client_jwt_token_" + Date.now(),
   user: {
     id: "client_001",
     email: "client@example.com",
-    fullName: "Pasien Contoh",
+    fullName: "Sample Client",
     role: "CLIENT",
     phoneNumber: "08123456789",
     dateOfBirth: "1990-01-15",
@@ -52,12 +52,12 @@ const MOCK_CLIENT_LOGIN: AuthResponse = {
 };
 
 const MOCK_THERAPIST_LOGIN: AuthResponse = {
-  message: "Login berhasil",
+  message: "Login successful",
   token: "mock_therapist_jwt_token_" + Date.now(),
   user: {
     id: "therapist_001",
     email: "therapist@example.com",
-    fullName: "Terapis Profesional",
+    fullName: "Professional Therapist",
     role: "THERAPIST",
     phoneNumber: "08987654321",
     specialization: "Traditional Massage",
@@ -65,24 +65,24 @@ const MOCK_THERAPIST_LOGIN: AuthResponse = {
 };
 
 const MOCK_CLIENT_SIGNUP: AuthResponse = {
-  message: "Akun klien berhasil dibuat",
+  message: "Client account created successfully",
   token: "mock_client_signup_token_" + Date.now(),
   user: {
     id: "client_new_" + Date.now(),
     email: "newclient@example.com",
-    fullName: "Klien Baru",
+    fullName: "New Client",
     role: "CLIENT",
     phoneNumber: "08111111111",
   },
 };
 
 const MOCK_THERAPIST_SIGNUP: AuthResponse = {
-  message: "Akun terapis berhasil dibuat",
+  message: "Therapist account created successfully",
   token: "mock_therapist_signup_token_" + Date.now(),
   user: {
     id: "therapist_new_" + Date.now(),
     email: "newtherapist@example.com",
-    fullName: "Terapis Baru",
+    fullName: "New Therapist",
     role: "THERAPIST",
     phoneNumber: "08222222222",
     specialization: "Acupressure",
