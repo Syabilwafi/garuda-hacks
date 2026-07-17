@@ -21,6 +21,12 @@ import {
     completeBooking,
     updateTherapistAvailability,
 } from '../controllers/bookingController.js';
+import {
+    generateClinicalNote,
+    getClinicalNote,
+    getClinicalNotesByTherapist,
+} from '../controllers/clinicalNoteController.js';
+import { submitScreening } from '../controllers/screeningController.js';
 import { verifyToken, verifyRole } from '../middleware/authMiddleware.js';
 
 const router = Router();
@@ -49,5 +55,13 @@ router.get('/bookings/user/:userId', getUserBookings);
 router.get('/bookings/therapist/:therapistId', getTherapistBookings);
 router.put('/bookings/:bookingId/cancel', cancelBooking);
 router.put('/bookings/:bookingId/complete', completeBooking);
+
+// Clinical note routes (AI-powered SOAP note generation)
+router.post('/clinical/translate', generateClinicalNote);
+router.get('/clinical/appointment/:appointmentId', getClinicalNote);
+router.get('/clinical/therapist/:therapistId', getClinicalNotesByTherapist);
+
+// Screening routes
+router.post('/screening/submit', submitScreening);
 
 export default router;

@@ -5,6 +5,9 @@ import dynamic from "next/dynamic";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PainTypeSelector, { PainType } from "@/components/ui/PainTypeSelector";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useAuth } from "@/context/AuthContext";
+import { generateClinicalNote } from "@/api/clinicalApi";
+import { submitScreeningAssessment } from "@/utils/screeningSubmission";
 import type { PainMarkData } from "@/components/3d/HumanModel";
 
 const HumanModel = dynamic(() => import("@/components/3d/HumanModel"), {
@@ -59,6 +62,7 @@ type TriageStatus = "HIJAU" | "KUNING" | "MERAH_MENDESAK" | "MERAH_DARURAT" | nu
 
 export default function PainMappingPage() {
     const router = useRouter();
+    const { user } = useAuth();
 
     const [selectedPainType, setSelectedPainType] = useState<PainType | null>("THROBBING");
     const [selectedIntensity, setSelectedIntensity] = useState<number>(3);
@@ -132,30 +136,50 @@ export default function PainMappingPage() {
 
         const finalStatus = getFinalTriageStatus();
 
-        const formData = {
-            paintedPoints: paintedPoints.map((p) => ({
-                coordinate3D: p.coordinate3D,
-                painType: p.painType,
-                intensity: p.intensity,
-            })),
-            healthDescription,
-            selectedIntensity,
-            statusTriase: finalStatus,
-            answers: triageAnswers
-        };
-
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-            console.log("Submitted Form Data: ", formData);
+            const bookingId = "test-booking-" + Date.now();
+
+            // 1. Submit screening data first
+            await submitScreeningAssessment({
+                userId: user?.id || '',
+                bookingId: bookingId,
+                triageStatus: finalStatus,
+                triageAnswers: triageAnswers,
+                selectedIntensity: selectedIntensity,
+                paintedPoints: paintedPoints,
+                healthDescription: healthDescription || ''
+            });
+
+            // 2. Generate clinical SOAP note
+            await generateClinicalNote({
+                appointmentId: bookingId,
+                patientId: user?.id || '',
+                patientName: user?.fullName || 'Pasien',
+                painPoints: paintedPoints.map((p) => ({
+                    location: p.anatomicalArea || 'Area Tubuh',
+                    painType: p.painType,
+                    intensity: p.intensity || 5
+                })),
+                painIntensity: selectedIntensity,
+                patientDescription: healthDescription || '',
+                screeningQuestions: triageAnswers,
+                triageStatus: finalStatus,
+                triageAnswers: triageAnswers
+            });
+
             setSubmitSuccess(true);
 
             setHealthDescription("");
             setTriageAnswers({});
             setPaintedPoints([]);
 
-            router.push("/dashboard/client");
+            setTimeout(() => {
+                router.push("/dashboard/client");
+            }, 2000);
+
         } catch (error) {
-            console.error("Submission failed", error);
+            console.error("Error submitting assessment:", error);
+            alert("Terjadi kesalahan saat mengirim assessment. Silakan coba lagi.");
         } finally {
             setIsSubmitting(false);
         }
