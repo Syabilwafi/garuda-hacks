@@ -58,7 +58,7 @@ export interface UserBooking {
 export const bookingApi = {
     async getAllTherapists(): Promise<TherapistSummary[]> {
         try {
-            const response = await apiClient<any>('/therapists', { method: 'GET' });
+            const response = await apiClient<any>('/api/therapists', { method: 'GET' });
             return response.therapists || [];
         } catch (error) {
             console.error('Error fetching therapists:', error);
@@ -69,8 +69,8 @@ export const bookingApi = {
     async getTherapistAvailability(therapistId: string, date?: string): Promise<TherapistAvailability | null> {
         try {
             const url = date
-                ? `/therapists/${therapistId}/availability?date=${date}`
-                : `/therapists/${therapistId}/availability`;
+                ? `/api/therapists/${therapistId}/availability?date=${date}`
+                : `/api/therapists/${therapistId}/availability`;
 
             const response = await apiClient<any>(url, { method: 'GET' });
             return {
@@ -85,7 +85,7 @@ export const bookingApi = {
 
     async createBooking(payload: BookingPayload): Promise<BookingResponse | null> {
         try {
-            const response = await apiClient<any>('/bookings', {
+            const response = await apiClient<any>('/api/bookings', {
                 method: 'POST',
                 body: JSON.stringify(payload),
             });
@@ -98,7 +98,7 @@ export const bookingApi = {
 
     async getUserBookings(userId: string): Promise<UserBooking[]> {
         try {
-            const response = await apiClient<any>(`/bookings/user/${userId}`, { method: 'GET' });
+            const response = await apiClient<any>(`/api/bookings/user/${userId}`, { method: 'GET' });
             return response.bookings || [];
         } catch (error) {
             console.error('Error fetching user bookings:', error);
@@ -108,7 +108,7 @@ export const bookingApi = {
 
     async cancelBooking(bookingId: string): Promise<boolean> {
         try {
-            await apiClient<any>(`/bookings/${bookingId}/cancel`, {
+            await apiClient<any>(`/api/bookings/${bookingId}/cancel`, {
                 method: 'PUT',
                 body: JSON.stringify({}),
             });
@@ -121,13 +121,26 @@ export const bookingApi = {
 
     async completeBooking(bookingId: string): Promise<boolean> {
         try {
-            await apiClient<any>(`/bookings/${bookingId}/complete`, {
+            await apiClient<any>(`/api/bookings/${bookingId}/complete`, {
                 method: 'PUT',
                 body: JSON.stringify({}),
             });
             return true;
         } catch (error) {
             console.error('Error completing booking:', error);
+            return false;
+        }
+    },
+
+    async updateTherapistAvailability(therapistId: string, slots: Array<{ time: string; isAvailable: boolean }>): Promise<boolean> {
+        try {
+            await apiClient<any>(`/api/therapists/${therapistId}/availability`, {
+                method: 'PUT',
+                body: JSON.stringify({ slots }),
+            });
+            return true;
+        } catch (error) {
+            console.error('Error updating therapist availability:', error);
             return false;
         }
     },
