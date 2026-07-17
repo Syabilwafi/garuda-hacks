@@ -200,7 +200,7 @@ export default function LoginPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", marginBottom: "0.5rem" }}>
-                    👤 Masuk sebagai Pasien
+                    Masuk sebagai Pasien
                   </h3>
                   <p style={{ fontSize: "0.9rem", color: "#4B5563", margin: 0 }}>
                     Akses pemetaan nyeri 3D dan rekomendasi terapi
@@ -229,7 +229,7 @@ export default function LoginPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", marginBottom: "0.5rem" }}>
-                    🏥 Masuk sebagai Terapis
+                    Masuk sebagai Terapis
                   </h3>
                   <p style={{ fontSize: "0.9rem", color: "#4B5563", margin: 0 }}>
                     Kelola sesi terapi dan evaluasi teknik Anda

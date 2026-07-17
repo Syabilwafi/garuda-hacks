@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
+import { useAuth } from '@/context/AuthContext';
 
 export default function LandingPage() {
     const router = useRouter();
+    const { isAuthenticated, user } = useAuth();
     const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
 
     return (
@@ -74,7 +76,15 @@ export default function LandingPage() {
             </p>
 
             <button
-              onClick={() => setIsRoleModalOpen(true)}
+              onClick={() => {
+                  if (isAuthenticated && user) {
+                      router.push(user.role === "CLIENT" ? "/dashboard/client" : "/dashboard/therapist");
+                  }
+                  else {
+                      setIsRoleModalOpen(true);
+                  }
+              }
+            }
               style={{
                 display: "inline-block",
                 textDecoration: "none",
