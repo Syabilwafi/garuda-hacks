@@ -32,6 +32,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const TOKEN_STORAGE_KEY = "presspoint_auth_token";
 const USER_STORAGE_KEY = "presspoint_user";
 
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  const nameEQ = name + "=";
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.indexOf(nameEQ) === 0) {
+      return decodeURIComponent(cookie.substring(nameEQ.length));
+    }
+  }
+  return null;
+};
+
+const setCookie = (name: string, value: string, days: number = 7): void => {
+  if (typeof document === 'undefined') return;
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+};
+
+const removeCookie = (name: string): void => {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -39,17 +64,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
-    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    const storedToken = getCookie(TOKEN_STORAGE_KEY);
+    const storedUser = getCookie(USER_STORAGE_KEY);
 
     if (storedToken && storedUser) {
       try {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       } catch (err) {
-        console.error("Failed to restore auth from storage:", err);
-        localStorage.removeItem(TOKEN_STORAGE_KEY);
-        localStorage.removeItem(USER_STORAGE_KEY);
+        console.error("Failed to restore auth from cookies:", err);
+        removeCookie(TOKEN_STORAGE_KEY);
+        removeCookie(USER_STORAGE_KEY);
       }
     }
 
@@ -71,8 +96,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(response.token);
     setError(null);
 
-    localStorage.setItem(TOKEN_STORAGE_KEY, response.token);
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+    setCookie(TOKEN_STORAGE_KEY, response.token);
+    setCookie(USER_STORAGE_KEY, JSON.stringify(userData));
   }, []);
 
   const login = useCallback(
@@ -125,8 +150,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setToken(null);
     setError(null);
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
-    localStorage.removeItem(USER_STORAGE_KEY);
+    removeCookie(TOKEN_STORAGE_KEY);
+    removeCookie(USER_STORAGE_KEY);
   }, []);
 
   const clearError = useCallback(() => {
