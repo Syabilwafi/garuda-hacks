@@ -160,13 +160,100 @@ export async function generateClinicalNote(
 export async function getClinicalNote(
   appointmentId: string
 ): Promise<ClinicalNoteDetail> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
+      // Return stored note if it exists
       if (clinicalNotesStorage[appointmentId]) {
         resolve(clinicalNotesStorage[appointmentId]);
-      } else {
-        reject(new Error("Clinical note not found. Please submit an assessment first."));
+        return;
       }
+
+      // Generate mock clinical note for demo/existing appointments
+      const mockPatientData = {
+        "APT-001": {
+          name: "Jane Doe",
+          description: "Chronic lower back pain for the past 3 weeks. Experiencing numbness around genitals and inner thighs after heavy lifting incident.",
+          painIntensity: 8,
+          triageStatus: "RED_EMERGENCY"
+        },
+        "APT-003": {
+          name: "Ahmad Subarjo",
+          description: "Recovery therapy after mild stroke. Taking blood thinners regularly.",
+          painIntensity: 5,
+          triageStatus: "YELLOW"
+        },
+        "APT-002": {
+          name: "Budi Raharjo",
+          description: "4th acupuncture session. Neck tension improving.",
+          painIntensity: 3,
+          triageStatus: "GREEN"
+        }
+      };
+
+      const patient = mockPatientData[appointmentId as keyof typeof mockPatientData];
+
+      if (!patient) {
+        resolve({
+          success: true,
+          clinicalNote: {
+            id: `CN-${appointmentId}`,
+            appointmentId: appointmentId,
+            patientId: `P-${appointmentId}`,
+            soapNote: generateMockSOAPNote({
+              appointmentId,
+              patientId: `P-${appointmentId}`,
+              patientName: "Patient",
+              painPoints: [{ location: "Body Area", painType: "DULL_ACHE", intensity: 5 }],
+              painIntensity: 5,
+              patientDescription: "General assessment",
+              screeningQuestions: {},
+              triageStatus: "GREEN",
+              triageAnswers: {}
+            }),
+            triageStatus: "GREEN",
+            screeningData: {
+              screeningQuestions: {},
+              triageAnswers: {},
+              triageStatus: "GREEN",
+              painIntensity: 5
+            },
+            generatedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+          }
+        });
+        return;
+      }
+
+      const soapNote = generateMockSOAPNote({
+        appointmentId,
+        patientId: `P-${appointmentId}`,
+        patientName: patient.name,
+        painPoints: [{ location: "Affected Area", painType: "DULL_ACHE", intensity: patient.painIntensity }],
+        painIntensity: patient.painIntensity,
+        patientDescription: patient.description,
+        screeningQuestions: {},
+        triageStatus: patient.triageStatus,
+        triageAnswers: {}
+      });
+
+      resolve({
+        success: true,
+        clinicalNote: {
+          id: `CN-${appointmentId}`,
+          appointmentId: appointmentId,
+          patientId: `P-${appointmentId}`,
+          soapNote: soapNote,
+          triageStatus: patient.triageStatus,
+          screeningData: {
+            screeningQuestions: {},
+            triageAnswers: {},
+            triageStatus: patient.triageStatus,
+            painIntensity: patient.painIntensity
+          },
+          generatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString()
+        }
+      });
     }, 300);
   });
 }
