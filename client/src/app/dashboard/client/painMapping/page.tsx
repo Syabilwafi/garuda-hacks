@@ -90,7 +90,7 @@ export default function PainMappingPage() {
         const updatedAnswers = { ...triageAnswers, [questionId]: answer };
         setTriageAnswers(updatedAnswers);
 
-        if (answer === "yes") {
+        if (answer === "ya") {
             if (stageType === 1) {
                 setHardStopStatus("RED_EMERGENCY");
             } else if (stageType === 2 && hardStopStatus !== "RED_EMERGENCY") {
@@ -120,7 +120,7 @@ export default function PainMappingPage() {
             return hardStopStatus;
         }
 
-        const hasStage3Yes = TAHAP_3_YELLOW.some((q) => triageAnswers[q.id] === "yes");
+        const hasStage3Yes = TAHAP_3_YELLOW.some((q) => triageAnswers[q.id] === "ya");
         const isPainSevere = selectedIntensity >= 7;
 
         if (hasStage3Yes || isPainSevere) {
@@ -544,25 +544,25 @@ export default function PainMappingPage() {
                                         <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--color-moss)" }}>Screening Complete</h3>
 
                                         {/* Triage Feedback - Reassured and Non-Threatening */}
-                                        {finalStatus === "MERAH_DARURAT" && (
+                                        {finalStatus === "RED_EMERGENCY" && (
                                             <div style={{ backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", fontSize: "0.85rem", color: "var(--color-moss)", textAlign: "left", lineHeight: 1.5 }}>
                                                 <strong>Catatan Kesehatan:</strong> Demi kenyamanan dan keselamatan Anda, beberapa keluhan yang terdeteksi membutuhkan pemeriksaan medis terlebih dahulu. Kami sangat menyarankan Anda berkonsultasi dengan dokter atau unit kesehatan terdekat sebelum menjadwalkan sesi terapi fisik atau pijat.
                                             </div>
                                         )}
 
-                                        {finalStatus === "MERAH_MENDESAK" && (
+                                        {finalStatus === "RED_URGENT" && (
                                             <div style={{ backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", fontSize: "0.85rem", color: "var(--color-moss)", textAlign: "left", lineHeight: 1.5 }}>
                                                 <strong>Saran Kami:</strong> Keluhan yang Anda rasakan sebaiknya dievaluasi secara langsung oleh dokter terlebih dahulu agar terapi pendukung ke depan dapat dirancang dengan aman dan optimal untuk Anda.
                                             </div>
                                         )}
 
-                                        {finalStatus === "KUNING" && (
+                                        {finalStatus === "YELLOW" && (
                                             <div style={{ backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", padding: "1rem", borderRadius: "var(--radius-sm)", fontSize: "0.85rem", color: "var(--color-moss)", textAlign: "left", lineHeight: 1.5 }}>
                                                 <strong>Informasi:</strong> Tim kami akan meninjau catatan kesehatan Anda untuk menyesuaikan metode terapi yang paling aman dan nyaman sesuai dengan kondisi fisik Anda saat ini.
                                             </div>
                                         )}
 
-                                        {finalStatus === "HIJAU" && (
+                                        {finalStatus === "GREEN" && (
                                             <p style={{ fontSize: "0.8rem", color: "var(--color-moss-60)", lineHeight: 1.5 }}>
                                                 Semua data skrining mandiri telah lengkap. Hasil pemetaan siap dikirimkan kepada tim kami untuk persiapan sesi Anda.
                                             </p>

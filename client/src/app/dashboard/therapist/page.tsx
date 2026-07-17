@@ -367,7 +367,7 @@ export default function TherapistDashboard() {
                         {selectedApt ? (
                             (() => {
                                 const triageConfig = getTriageBadgeStyles(selectedApt.triageStatus);
-                                const isEmergency = selectedApt.triageStatus === "MERAH_DARURAT" || selectedApt.triageStatus === "MERAH_MENDESAK";
+                                const isEmergency = selectedApt.triageStatus === "RED_EMERGENCY" || selectedApt.triageStatus === "RED_URGENT";
 
                                 return (
                                     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
