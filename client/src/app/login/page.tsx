@@ -33,8 +33,19 @@ export default function LoginPage() {
       return;
     }
 
-    if (!email || !password) {
-      setFormError("Email dan password wajib diisi");
+    if (!email.trim()) {
+      setFormError("Email wajib diisi");
+      return;
+    }
+
+    if (!password) {
+      setFormError("Password wajib diisi");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setFormError("Format email tidak valid");
       return;
     }
 
@@ -45,6 +56,8 @@ export default function LoginPage() {
       setFormError(error || "Login gagal");
     }
   };
+
+  const isFormValid = selectedRole && email.trim() && password;
 
   if (isLoading) {
     return (
@@ -349,16 +362,16 @@ export default function LoginPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !isFormValid}
                   style={{
                     padding: "0.95rem",
-                    backgroundColor: isLoading ? "#D1D5DB" : "var(--color-martini)",
+                    backgroundColor: isLoading || !isFormValid ? "#D1D5DB" : "var(--color-martini)",
                     color: "white",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "0.95rem",
                     fontWeight: 700,
-                    cursor: isLoading ? "not-allowed" : "pointer",
+                    cursor: isLoading || !isFormValid ? "not-allowed" : "pointer",
                     transition: "all 0.3s ease",
                     display: "flex",
                     alignItems: "center",
@@ -367,12 +380,12 @@ export default function LoginPage() {
                     marginTop: "0.5rem",
                   }}
                   onMouseEnter={(e) => {
-                    if (!isLoading) {
+                    if (!isLoading && isFormValid) {
                       (e.target as HTMLElement).style.opacity = "0.9";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isLoading) {
+                    if (!isLoading && isFormValid) {
                       (e.target as HTMLElement).style.opacity = "1";
                     }
                   }}

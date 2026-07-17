@@ -40,10 +40,14 @@ export async function apiClient<T>(
     });
 
     if (!response.ok) {
-      throw new ApiError(
-        response.status,
-        `HTTP ${response.status}: ${response.statusText}`
-      );
+      let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+      try {
+        const errorBody = await response.json();
+        errorMessage = errorBody.error || errorMessage;
+      } catch {
+        // If response body isn't JSON, use default message
+      }
+      throw new ApiError(response.status, errorMessage);
     }
 
     return await response.json();

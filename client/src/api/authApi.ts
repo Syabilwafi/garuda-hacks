@@ -90,55 +90,31 @@ const MOCK_THERAPIST_SIGNUP: AuthResponse = {
 };
 
 export async function loginClient(payload: LoginPayload): Promise<AuthResponse> {
-  try {
-    return await apiClient<AuthResponse>("/api/auth/login-client", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    console.warn("[authApi] Client login failed, using mock:", error);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    return MOCK_CLIENT_LOGIN;
-  }
+  return await apiClient<AuthResponse>("/api/auth/login-client", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function loginTherapist(payload: LoginPayload): Promise<AuthResponse> {
-  try {
-    return await apiClient<AuthResponse>("/api/auth/login-therapist", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    console.warn("[authApi] Therapist login failed, using mock:", error);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    return MOCK_THERAPIST_LOGIN;
-  }
+  return await apiClient<AuthResponse>("/api/auth/login-therapist", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function signupClient(payload: ClientSignupPayload): Promise<AuthResponse> {
-  try {
-    return await apiClient<AuthResponse>("/api/auth/register-client", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    console.warn("[authApi] Client signup failed, using mock:", error);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    return MOCK_CLIENT_SIGNUP;
-  }
+  return await apiClient<AuthResponse>("/api/auth/register-client", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function signupTherapist(payload: TherapistSignupPayload): Promise<AuthResponse> {
-  try {
-    return await apiClient<AuthResponse>("/api/auth/register-therapist", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    console.warn("[authApi] Therapist signup failed, using mock:", error);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    return MOCK_THERAPIST_SIGNUP;
-  }
+  return await apiClient<AuthResponse>("/api/auth/register-therapist", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function getClientProfile(token: string) {

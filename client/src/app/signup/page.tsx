@@ -83,42 +83,98 @@ export default function SignupPage() {
   };
 
   const validateClientForm = (): boolean => {
-    if (!clientForm.email || !clientForm.password || !clientForm.fullName) {
-      setFormError("Email, password, dan nama lengkap wajib diisi");
+    if (!clientForm.fullName.trim()) {
+      setFormError("Nama lengkap wajib diisi");
       return false;
     }
-    if (clientForm.password !== clientForm.confirmPassword) {
-      setFormError("Password tidak cocok");
+    if (!clientForm.email.trim()) {
+      setFormError("Email wajib diisi");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(clientForm.email)) {
+      setFormError("Format email tidak valid");
+      return false;
+    }
+    if (!clientForm.password) {
+      setFormError("Password wajib diisi");
       return false;
     }
     if (clientForm.password.length < 6) {
       setFormError("Password minimal 6 karakter");
       return false;
     }
+    if (!clientForm.confirmPassword) {
+      setFormError("Konfirmasi password wajib diisi");
+      return false;
+    }
+    if (clientForm.password !== clientForm.confirmPassword) {
+      setFormError("Password tidak cocok");
+      return false;
+    }
     return true;
   };
 
   const validateTherapistForm = (): boolean => {
-    if (
-      !therapistForm.email ||
-      !therapistForm.password ||
-      !therapistForm.fullName ||
-      !therapistForm.specialization ||
-      !therapistForm.licenseNumber
-    ) {
-      setFormError("Email, password, nama lengkap, spesialisasi, dan nomor lisensi wajib diisi");
+    if (!therapistForm.fullName.trim()) {
+      setFormError("Nama lengkap wajib diisi");
       return false;
     }
-    if (therapistForm.password !== therapistForm.confirmPassword) {
-      setFormError("Password tidak cocok");
+    if (!therapistForm.email.trim()) {
+      setFormError("Email wajib diisi");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(therapistForm.email)) {
+      setFormError("Format email tidak valid");
+      return false;
+    }
+    if (!therapistForm.password) {
+      setFormError("Password wajib diisi");
       return false;
     }
     if (therapistForm.password.length < 6) {
       setFormError("Password minimal 6 karakter");
       return false;
     }
+    if (!therapistForm.confirmPassword) {
+      setFormError("Konfirmasi password wajib diisi");
+      return false;
+    }
+    if (therapistForm.password !== therapistForm.confirmPassword) {
+      setFormError("Password tidak cocok");
+      return false;
+    }
+    if (!therapistForm.specialization) {
+      setFormError("Spesialisasi wajib dipilih");
+      return false;
+    }
+    if (!therapistForm.licenseNumber.trim()) {
+      setFormError("Nomor lisensi wajib diisi");
+      return false;
+    }
     return true;
   };
+
+  const isClientFormValid =
+    clientForm.fullName.trim() &&
+    clientForm.email.trim() &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientForm.email) &&
+    clientForm.password &&
+    clientForm.password.length >= 6 &&
+    clientForm.confirmPassword &&
+    clientForm.password === clientForm.confirmPassword;
+
+  const isTherapistFormValid =
+    therapistForm.fullName.trim() &&
+    therapistForm.email.trim() &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(therapistForm.email) &&
+    therapistForm.password &&
+    therapistForm.password.length >= 6 &&
+    therapistForm.confirmPassword &&
+    therapistForm.password === therapistForm.confirmPassword &&
+    therapistForm.specialization &&
+    therapistForm.licenseNumber.trim();
 
   const handleClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -503,26 +559,26 @@ export default function SignupPage() {
                 {/* Submit Button - Client */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !isClientFormValid}
                   style={{
                     padding: "0.95rem",
-                    backgroundColor: isLoading ? "#D1D5DB" : "var(--color-martini)",
+                    backgroundColor: isLoading || !isClientFormValid ? "#D1D5DB" : "var(--color-martini)",
                     color: "white",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "0.95rem",
                     fontWeight: 700,
-                    cursor: isLoading ? "not-allowed" : "pointer",
+                    cursor: isLoading || !isClientFormValid ? "not-allowed" : "pointer",
                     marginTop: "0.5rem",
                     transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) => {
-                    if (!isLoading) {
+                    if (!isLoading && isClientFormValid) {
                       (e.target as HTMLElement).style.opacity = "0.9";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isLoading) {
+                    if (!isLoading && isClientFormValid) {
                       (e.target as HTMLElement).style.opacity = "1";
                     }
                   }}
@@ -708,26 +764,26 @@ export default function SignupPage() {
                 {/* Submit Button - Therapist */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !isTherapistFormValid}
                   style={{
                     padding: "0.95rem",
-                    backgroundColor: isLoading ? "#D1D5DB" : "var(--color-martini)",
+                    backgroundColor: isLoading || !isTherapistFormValid ? "#D1D5DB" : "var(--color-martini)",
                     color: "white",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "0.95rem",
                     fontWeight: 700,
-                    cursor: isLoading ? "not-allowed" : "pointer",
+                    cursor: isLoading || !isTherapistFormValid ? "not-allowed" : "pointer",
                     marginTop: "0.5rem",
                     transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) => {
-                    if (!isLoading) {
+                    if (!isLoading && isTherapistFormValid) {
                       (e.target as HTMLElement).style.opacity = "0.9";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isLoading) {
+                    if (!isLoading && isTherapistFormValid) {
                       (e.target as HTMLElement).style.opacity = "1";
                     }
                   }}
