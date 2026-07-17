@@ -180,6 +180,7 @@ export default function PainMappingPage() {
         } catch (error) {
             console.error("Error submitting assessment:", error);
             alert("Terjadi kesalahan saat mengirim assessment. Silakan coba lagi.");
+            router.push("/dashboard/client");
         } finally {
             setIsSubmitting(false);
         }
