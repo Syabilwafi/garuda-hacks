@@ -13,7 +13,7 @@ export interface EvaluationResponse {
 }
 const MOCK_EVALUATION: EvaluationResponse = {
   evaluationId: "eval-mock-001",
-  status: "NEEDS_IMPROVEMENT",
+  status: "PERLU_PERBAIKAN",
   summary:
     "Basic technique shows good understanding of the target area. However, pressure on the neck area needs to be reduced and movement speed in some segments needs adjustment to avoid injury risk.",
   feedbackTimeline: [
