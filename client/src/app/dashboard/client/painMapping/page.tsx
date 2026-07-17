@@ -115,7 +115,7 @@ export default function PainMappingPage() {
         }
     };
 
-    const getFinalTriageStatus = (): TriageStatus => {
+    const getFinalTriageStatus = (): Exclude<TriageStatus, null> => {
         if (hardStopStatus === "RED_EMERGENCY" || hardStopStatus === "RED_URGENT") {
             return hardStopStatus;
         }
@@ -156,7 +156,7 @@ export default function PainMappingPage() {
                 patientId: user?.id || '',
                 patientName: user?.fullName || 'Patient',
                 painPoints: paintedPoints.map((p) => ({
-                    location: p.anatomicalArea || 'Body Area',
+                    location: 'Body Area',
                     painType: p.painType,
                     intensity: p.intensity || 5
                 })),
